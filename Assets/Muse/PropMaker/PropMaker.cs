@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
 
-// [ExecuteInEditMode]
 public class PropMaker : MonoBehaviour
 {
     public GameObject baseGameObject;
@@ -44,6 +41,7 @@ public class PropMaker : MonoBehaviour
         {
             var child = children[i];
             var basePrefab = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
+
             if (zeroOutChildTransforms)
             {
                 basePrefab.transform.position = child.transform.position;
@@ -51,28 +49,13 @@ public class PropMaker : MonoBehaviour
             }
 
             var copy = Instantiate<GameObject>(child, basePrefab.transform, false);
-
             copy.name = child.name;
 
             if (zeroOutChildTransforms)
             {
-                // basePrefab.transform.position = copy.transform.position;
-                // basePrefab.transform.rotation = copy.transform.rotation;
                 copy.transform.localPosition = Vector3.zero;
                 copy.transform.localRotation = Quaternion.identity;
             }
-
-            // // PrefabUtility.InstantiatePrefab(child);
-            // // child.transform.SetParent(basePrefab.transform);
-
-            // copy.transform.SetParent(basePrefab.transform);
-            // copy.transform.position = child.transform.position;
-            // copy.transform.rotation = child.transform.rotation;
-
-            // // child.transform.position = Vector3.zero;
-            // // child.transform.rotation = Quaternion.identity;
-            // // Debug.Log(child.name);
-            // // var copy = PrefabUtility.InstantiatePrefab(child) as GameObject;
 
             basePrefab.name = copy.name;
 
@@ -80,8 +63,8 @@ public class PropMaker : MonoBehaviour
             var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
 
             var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
-
             var variant = PrefabUtility.InstantiatePrefab(obj) as GameObject;
+
             variant.transform.position = basePrefab.transform.position;
             variant.transform.rotation = basePrefab.transform.rotation;
 
