@@ -9,13 +9,12 @@ public class PropMaker : MonoBehaviour
     public GameObject baseGameObject;
     public string suffix;
 
-    public void Spawn(GameObject[] children)
+    public void FromSelectedModels(GameObject[] children)
     {
         var helper = new GameObject("Helper").AddComponent<GameObjectToolHelper>();
 
         for (int i = 0; i < children.Length; i++)
         {
-
             var child = children[i];
 
             var basePrefab = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
@@ -34,6 +33,34 @@ public class PropMaker : MonoBehaviour
 
         helper.Finish();
     }
+
+    public void FromSelectedGameObjects(GameObject[] children)
+    {
+        var helper = new GameObject("Helper").AddComponent<GameObjectToolHelper>();
+
+        for (int i = 0; i < children.Length; i++)
+        {
+            var child = children[i];
+
+            var basePrefab = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
+
+            basePrefab.name = child.name;
+
+            child.transform.SetParent(basePrefab.transform);
+
+            var path = "Assets/";
+            var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
+
+            var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
+
+            helper.DestroyImmediateGameObject(basePrefab);
+
+            var variant = PrefabUtility.InstantiatePrefab(obj) as GameObject;
+        }
+
+        helper.Finish();
+    }
+
 
     public void FoldersForSelected(GameObject[] children)
     {
@@ -87,10 +114,15 @@ public class PropMakerEditor : Editor
     {
         base.OnInspectorGUI();
         var a = target as PropMaker;
-        if (GUILayout.Button("Make Prefab Variant"))
+        if (GUILayout.Button("Make Prefab Variant From Selected Models"))
         {
             var gameObjects = Selection.gameObjects;
-            a.Spawn(gameObjects);
+            a.FromSelectedModels(gameObjects);
+        }
+        if (GUILayout.Button("Make Prefab Variant From Selected GameObjects"))
+        {
+            var gameObjects = Selection.gameObjects;
+            a.FromSelectedGameObjects(gameObjects);
         }
         if (GUILayout.Button("Create Folder(s) for selected"))
         {

@@ -16,6 +16,6 @@ public class GameObjectToolHelper : MonoBehaviour
 
     public void Finish()
     {
-        DestroyImmediate(this);
+        DestroyImmediate(gameObject);
     }
 }
