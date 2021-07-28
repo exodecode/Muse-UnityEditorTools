@@ -4,10 +4,12 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
+// [ExecuteInEditMode]
 public class PropMaker : MonoBehaviour
 {
     public GameObject baseGameObject;
     public string suffix;
+    public bool zeroOutChildTransforms;
 
     public void FromSelectedModels(GameObject[] children)
     {
@@ -41,27 +43,49 @@ public class PropMaker : MonoBehaviour
         for (int i = 0; i < children.Length; i++)
         {
             var child = children[i];
-
             var basePrefab = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
+            if (zeroOutChildTransforms)
+            {
+                basePrefab.transform.position = child.transform.position;
+                basePrefab.transform.rotation = child.transform.rotation;
+            }
 
-            basePrefab.name = child.name;
+            var copy = Instantiate<GameObject>(child, basePrefab.transform, false);
 
-            basePrefab.transform.position = child.transform.position;
-            basePrefab.transform.rotation = child.transform.rotation;
+            copy.name = child.name;
 
-            child.transform.SetParent(basePrefab.transform);
+            if (zeroOutChildTransforms)
+            {
+                // basePrefab.transform.position = copy.transform.position;
+                // basePrefab.transform.rotation = copy.transform.rotation;
+                copy.transform.localPosition = Vector3.zero;
+                copy.transform.localRotation = Quaternion.identity;
+            }
 
-            child.transform.position = Vector3.zero;
-            child.transform.rotation = Quaternion.identity;
+            // // PrefabUtility.InstantiatePrefab(child);
+            // // child.transform.SetParent(basePrefab.transform);
+
+            // copy.transform.SetParent(basePrefab.transform);
+            // copy.transform.position = child.transform.position;
+            // copy.transform.rotation = child.transform.rotation;
+
+            // // child.transform.position = Vector3.zero;
+            // // child.transform.rotation = Quaternion.identity;
+            // // Debug.Log(child.name);
+            // // var copy = PrefabUtility.InstantiatePrefab(child) as GameObject;
+
+            basePrefab.name = copy.name;
 
             var path = "Assets/";
             var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
 
             var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
 
-            helper.DestroyImmediateGameObject(basePrefab);
-
             var variant = PrefabUtility.InstantiatePrefab(obj) as GameObject;
+            variant.transform.position = basePrefab.transform.position;
+            variant.transform.rotation = basePrefab.transform.rotation;
+
+            helper.DestroyImmediateGameObject(basePrefab);
         }
 
         helper.Finish();
