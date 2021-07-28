@@ -19,18 +19,12 @@ public class PropMaker : MonoBehaviour
             var basePrefab = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
             var prop = PrefabUtility.InstantiatePrefab(child) as GameObject;
 
-
-            // prop.transform.position = child.transform.position;
-            // prop.transform.rotation = child.transform.rotation;
-
             basePrefab.name = child.name;
-            // child.transform.SetParent(prop.transform);
 
             prop.transform.SetParent(basePrefab.transform);
 
             var path = AssetDatabase.GetAssetPath(child);
             var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + ".prefab";
-            // Debug.Log(pathWithName);
             var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
 
             helper.DestroyImmediateGameObject(basePrefab);
@@ -47,7 +41,7 @@ public class PropMakerEditor : Editor
     {
         base.OnInspectorGUI();
         var a = target as PropMaker;
-        if (GUILayout.Button("Assign to Dynamic prefabs"))
+        if (GUILayout.Button("Make Prefab Variant"))
         {
             var gameObjects = Selection.gameObjects;
             a.Spawn(gameObjects);
