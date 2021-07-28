@@ -9,6 +9,10 @@ public class GameObjectToolHelper : MonoBehaviour
     {
         DestroyImmediate(col);
     }
+    public void DestroyImmediateGameObject(GameObject g)
+    {
+        DestroyImmediate(g);
+    }
 
     public void Finish()
     {

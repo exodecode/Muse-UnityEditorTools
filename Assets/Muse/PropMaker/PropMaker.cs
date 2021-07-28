@@ -9,17 +9,34 @@ public class PropMaker : MonoBehaviour
 
     public void Spawn(GameObject[] children)
     {
+        var helper = new GameObject("Helper").AddComponent<GameObjectToolHelper>();
+
         for (int i = 0; i < children.Length; i++)
         {
+
             var child = children[i];
 
-            var prop = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
-            prop.transform.position = child.transform.position;
-            prop.transform.rotation = child.transform.rotation;
+            var basePrefab = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
+            var prop = PrefabUtility.InstantiatePrefab(child) as GameObject;
 
-            prop.name = child.name;
-            child.transform.SetParent(prop.transform);
+
+            // prop.transform.position = child.transform.position;
+            // prop.transform.rotation = child.transform.rotation;
+
+            basePrefab.name = child.name;
+            // child.transform.SetParent(prop.transform);
+
+            prop.transform.SetParent(basePrefab.transform);
+
+            var path = AssetDatabase.GetAssetPath(child);
+            var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + ".prefab";
+            // Debug.Log(pathWithName);
+            var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
+
+            helper.DestroyImmediateGameObject(basePrefab);
         }
+
+        helper.Finish();
     }
 }
 
