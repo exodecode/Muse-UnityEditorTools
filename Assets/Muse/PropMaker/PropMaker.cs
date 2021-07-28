@@ -62,11 +62,14 @@ public class PropMaker : MonoBehaviour
             var path = "Assets/";
             var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
 
+            basePrefab.transform.position = Vector3.zero;
+            basePrefab.transform.rotation = Quaternion.identity;
             var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
+
             var variant = PrefabUtility.InstantiatePrefab(obj) as GameObject;
 
-            variant.transform.position = basePrefab.transform.position;
-            variant.transform.rotation = basePrefab.transform.rotation;
+            variant.transform.position = child.transform.position;
+            variant.transform.rotation = child.transform.rotation;
 
             helper.DestroyImmediateGameObject(basePrefab);
         }
