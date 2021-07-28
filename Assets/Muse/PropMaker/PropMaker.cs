@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System.IO;
 
 public class PropMaker : MonoBehaviour
 {
     public GameObject baseGameObject;
+    public string suffix;
 
     public void Spawn(GameObject[] children)
     {
@@ -24,13 +26,57 @@ public class PropMaker : MonoBehaviour
             prop.transform.SetParent(basePrefab.transform);
 
             var path = AssetDatabase.GetAssetPath(child);
-            var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + ".prefab";
+            var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
             var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
 
             helper.DestroyImmediateGameObject(basePrefab);
         }
 
         helper.Finish();
+    }
+
+    public void FoldersForSelected(GameObject[] children)
+    {
+        for (int i = 0; i < children.Length; i++)
+        {
+            var child = children[i];
+            var dir = child.name + '/';
+            var dataPath = Application.dataPath;
+            var assetPath = AssetDatabase.GetAssetPath(child);
+            var nameWithFileType = assetPath.Substring(assetPath.LastIndexOf('/') + 1, assetPath.Length - (assetPath.LastIndexOf('/') + 1));
+            var fullPath = dataPath + assetPath.Substring(assetPath.IndexOf('/'), assetPath.Length - assetPath.IndexOf('/'));
+            var directoryPath = fullPath.Substring(0, fullPath.LastIndexOf('/') + 1);
+
+            var parentDirecory = Path.GetDirectoryName(assetPath).Replace('\\', '/');
+            var parentDirecoryName = parentDirecory.Substring(parentDirecory.LastIndexOf('/') + 1, parentDirecory.Length - (parentDirecory.LastIndexOf('/') + 1));
+            var localPath = assetPath.Substring(0, assetPath.LastIndexOf('/'));
+
+            // Debug.Log("Name: " + child.name);
+            // Debug.Log("Directory Name: " + parentDirecoryName);
+
+            if (parentDirecoryName != child.name)
+            {
+                var newDirectoryPath = directoryPath + dir;
+                System.IO.Directory.CreateDirectory(newDirectoryPath);
+            }
+            else
+                Debug.LogWarning(nameWithFileType + " is already in a folder with the same name!");
+        }
+
+        AssetDatabase.Refresh();
+
+        for (int i = 0; i < children.Length; i++)
+        {
+            var child = children[i];
+            var dir = child.name + '/';
+            var assetPath = AssetDatabase.GetAssetPath(child);
+            var nameWithFileType = assetPath.Substring(assetPath.LastIndexOf('/') + 1, assetPath.Length - (assetPath.LastIndexOf('/') + 1));
+            var newAssetPath = assetPath.Substring(0, assetPath.LastIndexOf('/') + 1) + dir + nameWithFileType;
+
+            AssetDatabase.MoveAsset(assetPath, newAssetPath);
+        }
+
+        AssetDatabase.Refresh();
     }
 }
 
@@ -45,6 +91,11 @@ public class PropMakerEditor : Editor
         {
             var gameObjects = Selection.gameObjects;
             a.Spawn(gameObjects);
+        }
+        if (GUILayout.Button("Create Folder(s) for selected"))
+        {
+            var gameObjects = Selection.gameObjects;
+            a.FoldersForSelected(gameObjects);
         }
     }
 }
