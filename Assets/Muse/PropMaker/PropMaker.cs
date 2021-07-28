@@ -46,7 +46,13 @@ public class PropMaker : MonoBehaviour
 
             basePrefab.name = child.name;
 
+            basePrefab.transform.position = child.transform.position;
+            basePrefab.transform.rotation = child.transform.rotation;
+
             child.transform.SetParent(basePrefab.transform);
+
+            child.transform.position = Vector3.zero;
+            child.transform.rotation = Quaternion.identity;
 
             var path = "Assets/";
             var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
@@ -77,9 +83,6 @@ public class PropMaker : MonoBehaviour
             var parentDirecory = Path.GetDirectoryName(assetPath).Replace('\\', '/');
             var parentDirecoryName = parentDirecory.Substring(parentDirecory.LastIndexOf('/') + 1, parentDirecory.Length - (parentDirecory.LastIndexOf('/') + 1));
             var localPath = assetPath.Substring(0, assetPath.LastIndexOf('/'));
-
-            // Debug.Log("Name: " + child.name);
-            // Debug.Log("Directory Name: " + parentDirecoryName);
 
             if (parentDirecoryName != child.name)
             {

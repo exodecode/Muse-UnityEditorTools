@@ -101,7 +101,7 @@ static class GameObjectTools
         helper.Finish();
     }
 
-    [MenuItem("Tools/GameObject/Collider/Adjust Box Collider Based Children")]
+    [MenuItem("Tools/GameObject/Collider/Try Add and Adjust Box Collider Based Children")]
     static void AddBoxColliderBasedOnChildMeshes()
     {
         var transforms = GetSelectedTransforms();
