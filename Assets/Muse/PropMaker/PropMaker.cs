@@ -77,7 +77,6 @@ public class PropMaker : MonoBehaviour
         helper.Finish();
     }
 
-
     public void FoldersForSelected(GameObject[] children)
     {
         for (int i = 0; i < children.Length; i++)

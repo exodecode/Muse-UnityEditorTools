@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-public static class PropPlacementTools
+public static class PlacementTools
 {
     [MenuItem("Tools/PropPlacement/Set Random Y Rotation")]
     public static void SetRandomYRotation()
