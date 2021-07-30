@@ -1,14 +1,17 @@
 using UnityEditor;
 using UnityEngine;
 
-public static class PlacementTools
+namespace Muse
 {
-    [MenuItem("Tools/PropPlacement/Set Random Y Rotation")]
-    public static void SetRandomYRotation()
+    public static class PlacementTools
     {
-        var gameObjects = Selection.gameObjects;
-        for (int i = 0; i < gameObjects.Length; i++)
-            gameObjects[i].transform.rotation =
-                Quaternion.Euler(0, Random.Range(0f, 360f), 0);
+        [MenuItem("Tools/Muse/PropPlacement/Set Random Y Rotation")]
+        public static void SetRandomYRotation()
+        {
+            var gameObjects = Selection.gameObjects;
+            for (int i = 0; i < gameObjects.Length; i++)
+                gameObjects[i].transform.rotation =
+                    Quaternion.Euler(0, Random.Range(0f, 360f), 0);
+        }
     }
 }

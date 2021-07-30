@@ -3,46 +3,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class ModelImporter : MonoBehaviour
+namespace Muse
 {
-    public GameObject prefabReplacement;
-
-    public void ReplaceSelected()
+    public class ModelImporter : MonoBehaviour
     {
-        var selectedGameObjects = Selection.gameObjects;
-        var length = selectedGameObjects.Length;
-        var replacementsParent = new GameObject("[Replacements]");
+        public GameObject prefabReplacement;
 
-        for (int i = 0; i < length; i++)
+        public void ReplaceSelected()
         {
-            var go = selectedGameObjects[i];
-            go.transform.SetParent(transform);
+            var selectedGameObjects = Selection.gameObjects;
+            var length = selectedGameObjects.Length;
+            var replacementsParent = new GameObject("[Replacements]");
 
-            var position = go.transform.position;
-            var rotation = go.transform.rotation;
-            var replacement = PrefabUtility.InstantiatePrefab(prefabReplacement) as GameObject;
+            for (int i = 0; i < length; i++)
+            {
+                var go = selectedGameObjects[i];
+                go.transform.SetParent(transform);
 
-            replacement.transform.position = position;
-            replacement.transform.rotation = rotation;
+                var position = go.transform.position;
+                var rotation = go.transform.rotation;
+                var replacement = PrefabUtility.InstantiatePrefab(prefabReplacement) as GameObject;
 
-            replacement
-                .transform
-                .SetParent(replacementsParent.transform);
+                replacement.transform.position = position;
+                replacement.transform.rotation = rotation;
+
+                replacement
+                    .transform
+                    .SetParent(replacementsParent.transform);
+            }
         }
     }
-}
 
-[CustomEditor(typeof(ModelImporter))]
-public class ModelImporterEditor : Editor
-{
-    public override void OnInspectorGUI()
+    [CustomEditor(typeof(ModelImporter))]
+    public class ModelImporterEditor : Editor
     {
-        base.OnInspectorGUI();
-        var a = target as ModelImporter;
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+            var a = target as ModelImporter;
 
-        EditorGUILayout.Space();
+            EditorGUILayout.Space();
 
-        if (GUILayout.Button("Replace Selected GameObjects"))
-            a.ReplaceSelected();
+            if (GUILayout.Button("Replace Selected GameObjects"))
+                a.ReplaceSelected();
+        }
     }
 }

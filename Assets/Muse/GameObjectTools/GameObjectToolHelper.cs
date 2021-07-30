@@ -1,18 +1,21 @@
 using UnityEngine;
 
-public class GameObjectToolHelper : MonoBehaviour
+namespace Muse
 {
-    public void DestroyImmediateCollider(Collider col)
+    public class GameObjectToolHelper : MonoBehaviour
     {
-        DestroyImmediate(col);
-    }
-    public void DestroyImmediateGameObject(GameObject g)
-    {
-        DestroyImmediate(g);
-    }
+        public void DestroyImmediateCollider(Collider col)
+        {
+            DestroyImmediate(col);
+        }
+        public void DestroyImmediateGameObject(GameObject g)
+        {
+            DestroyImmediate(g);
+        }
 
-    public void Finish()
-    {
-        DestroyImmediate(gameObject);
+        public void Finish()
+        {
+            DestroyImmediate(gameObject);
+        }
     }
 }

@@ -2,144 +2,147 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
-public class PropMaker : MonoBehaviour
+namespace Muse
 {
-    public GameObject baseGameObject;
-    public string suffix;
-    public bool zeroOutChildTransforms;
-
-    public void FromSelectedModels(GameObject[] children)
+    public class PropMaker : MonoBehaviour
     {
-        var helper = new GameObject("Helper").AddComponent<GameObjectToolHelper>();
+        public GameObject baseGameObject;
+        public string suffix;
+        public bool zeroOutChildTransforms;
 
-        for (int i = 0; i < children.Length; i++)
+        public void FromSelectedModels(GameObject[] children)
         {
-            var child = children[i];
+            var helper = new GameObject("Helper").AddComponent<GameObjectToolHelper>();
 
-            var basePrefab = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
-            var prop = PrefabUtility.InstantiatePrefab(child) as GameObject;
-
-            basePrefab.name = child.name;
-
-            prop.transform.SetParent(basePrefab.transform);
-
-            var path = AssetDatabase.GetAssetPath(child);
-            var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
-            var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
-
-            helper.DestroyImmediateGameObject(basePrefab);
-        }
-
-        helper.Finish();
-    }
-
-    public void FromSelectedGameObjects(GameObject[] children)
-    {
-        var helper = new GameObject("Helper").AddComponent<GameObjectToolHelper>();
-
-        for (int i = 0; i < children.Length; i++)
-        {
-            var child = children[i];
-            var basePrefab = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
-
-            if (zeroOutChildTransforms)
+            for (int i = 0; i < children.Length; i++)
             {
-                basePrefab.transform.position = child.transform.position;
-                basePrefab.transform.rotation = child.transform.rotation;
+                var child = children[i];
+
+                var basePrefab = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
+                var prop = PrefabUtility.InstantiatePrefab(child) as GameObject;
+
+                basePrefab.name = child.name;
+
+                prop.transform.SetParent(basePrefab.transform);
+
+                var path = AssetDatabase.GetAssetPath(child);
+                var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
+                var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
+
+                helper.DestroyImmediateGameObject(basePrefab);
             }
 
-            var copy = Instantiate<GameObject>(child, basePrefab.transform, false);
-            copy.name = child.name;
+            helper.Finish();
+        }
 
-            if (zeroOutChildTransforms)
+        public void FromSelectedGameObjects(GameObject[] children)
+        {
+            var helper = new GameObject("Helper").AddComponent<GameObjectToolHelper>();
+
+            for (int i = 0; i < children.Length; i++)
             {
-                copy.transform.localPosition = Vector3.zero;
-                copy.transform.localRotation = Quaternion.identity;
+                var child = children[i];
+                var basePrefab = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
+
+                if (zeroOutChildTransforms)
+                {
+                    basePrefab.transform.position = child.transform.position;
+                    basePrefab.transform.rotation = child.transform.rotation;
+                }
+
+                var copy = Instantiate<GameObject>(child, basePrefab.transform, false);
+                copy.name = child.name;
+
+                if (zeroOutChildTransforms)
+                {
+                    copy.transform.localPosition = Vector3.zero;
+                    copy.transform.localRotation = Quaternion.identity;
+                }
+
+                basePrefab.name = copy.name;
+
+                var path = "Assets/";
+                var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
+
+                basePrefab.transform.position = Vector3.zero;
+                basePrefab.transform.rotation = Quaternion.identity;
+                var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
+
+                var variant = PrefabUtility.InstantiatePrefab(obj) as GameObject;
+
+                variant.transform.position = child.transform.position;
+                variant.transform.rotation = child.transform.rotation;
+
+                helper.DestroyImmediateGameObject(basePrefab);
             }
 
-            basePrefab.name = copy.name;
-
-            var path = "Assets/";
-            var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
-
-            basePrefab.transform.position = Vector3.zero;
-            basePrefab.transform.rotation = Quaternion.identity;
-            var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
-
-            var variant = PrefabUtility.InstantiatePrefab(obj) as GameObject;
-
-            variant.transform.position = child.transform.position;
-            variant.transform.rotation = child.transform.rotation;
-
-            helper.DestroyImmediateGameObject(basePrefab);
+            helper.Finish();
         }
 
-        helper.Finish();
-    }
-
-    public void FoldersForSelected(GameObject[] children)
-    {
-        for (int i = 0; i < children.Length; i++)
+        public void FoldersForSelected(GameObject[] children)
         {
-            var child = children[i];
-            var dir = child.name + '/';
-            var dataPath = Application.dataPath;
-            var assetPath = AssetDatabase.GetAssetPath(child);
-            var nameWithFileType = assetPath.Substring(assetPath.LastIndexOf('/') + 1, assetPath.Length - (assetPath.LastIndexOf('/') + 1));
-            var fullPath = dataPath + assetPath.Substring(assetPath.IndexOf('/'), assetPath.Length - assetPath.IndexOf('/'));
-            var directoryPath = fullPath.Substring(0, fullPath.LastIndexOf('/') + 1);
-
-            var parentDirecory = Path.GetDirectoryName(assetPath).Replace('\\', '/');
-            var parentDirecoryName = parentDirecory.Substring(parentDirecory.LastIndexOf('/') + 1, parentDirecory.Length - (parentDirecory.LastIndexOf('/') + 1));
-            var localPath = assetPath.Substring(0, assetPath.LastIndexOf('/'));
-
-            if (parentDirecoryName != child.name)
+            for (int i = 0; i < children.Length; i++)
             {
-                var newDirectoryPath = directoryPath + dir;
-                System.IO.Directory.CreateDirectory(newDirectoryPath);
+                var child = children[i];
+                var dir = child.name + '/';
+                var dataPath = Application.dataPath;
+                var assetPath = AssetDatabase.GetAssetPath(child);
+                var nameWithFileType = assetPath.Substring(assetPath.LastIndexOf('/') + 1, assetPath.Length - (assetPath.LastIndexOf('/') + 1));
+                var fullPath = dataPath + assetPath.Substring(assetPath.IndexOf('/'), assetPath.Length - assetPath.IndexOf('/'));
+                var directoryPath = fullPath.Substring(0, fullPath.LastIndexOf('/') + 1);
+
+                var parentDirecory = Path.GetDirectoryName(assetPath).Replace('\\', '/');
+                var parentDirecoryName = parentDirecory.Substring(parentDirecory.LastIndexOf('/') + 1, parentDirecory.Length - (parentDirecory.LastIndexOf('/') + 1));
+                var localPath = assetPath.Substring(0, assetPath.LastIndexOf('/'));
+
+                if (parentDirecoryName != child.name)
+                {
+                    var newDirectoryPath = directoryPath + dir;
+                    System.IO.Directory.CreateDirectory(newDirectoryPath);
+                }
+                else
+                    Debug.LogWarning(nameWithFileType + " is already in a folder with the same name!");
             }
-            else
-                Debug.LogWarning(nameWithFileType + " is already in a folder with the same name!");
+
+            AssetDatabase.Refresh();
+
+            for (int i = 0; i < children.Length; i++)
+            {
+                var child = children[i];
+                var dir = child.name + '/';
+                var assetPath = AssetDatabase.GetAssetPath(child);
+                var nameWithFileType = assetPath.Substring(assetPath.LastIndexOf('/') + 1, assetPath.Length - (assetPath.LastIndexOf('/') + 1));
+                var newAssetPath = assetPath.Substring(0, assetPath.LastIndexOf('/') + 1) + dir + nameWithFileType;
+
+                AssetDatabase.MoveAsset(assetPath, newAssetPath);
+            }
+
+            AssetDatabase.Refresh();
         }
-
-        AssetDatabase.Refresh();
-
-        for (int i = 0; i < children.Length; i++)
-        {
-            var child = children[i];
-            var dir = child.name + '/';
-            var assetPath = AssetDatabase.GetAssetPath(child);
-            var nameWithFileType = assetPath.Substring(assetPath.LastIndexOf('/') + 1, assetPath.Length - (assetPath.LastIndexOf('/') + 1));
-            var newAssetPath = assetPath.Substring(0, assetPath.LastIndexOf('/') + 1) + dir + nameWithFileType;
-
-            AssetDatabase.MoveAsset(assetPath, newAssetPath);
-        }
-
-        AssetDatabase.Refresh();
     }
-}
 
-[CustomEditor(typeof(PropMaker))]
-public class PropMakerEditor : Editor
-{
-    public override void OnInspectorGUI()
+    [CustomEditor(typeof(PropMaker))]
+    public class PropMakerEditor : Editor
     {
-        base.OnInspectorGUI();
-        var a = target as PropMaker;
-        if (GUILayout.Button("Make Prefab Variant From Selected Models"))
+        public override void OnInspectorGUI()
         {
-            var gameObjects = Selection.gameObjects;
-            a.FromSelectedModels(gameObjects);
-        }
-        if (GUILayout.Button("Make Prefab Variant From Selected GameObjects"))
-        {
-            var gameObjects = Selection.gameObjects;
-            a.FromSelectedGameObjects(gameObjects);
-        }
-        if (GUILayout.Button("Create Folder(s) for selected"))
-        {
-            var gameObjects = Selection.gameObjects;
-            a.FoldersForSelected(gameObjects);
+            base.OnInspectorGUI();
+            var a = target as PropMaker;
+            if (GUILayout.Button("Make Prefab Variant From Selected Models"))
+            {
+                var gameObjects = Selection.gameObjects;
+                a.FromSelectedModels(gameObjects);
+            }
+            if (GUILayout.Button("Make Prefab Variant From Selected GameObjects"))
+            {
+                var gameObjects = Selection.gameObjects;
+                a.FromSelectedGameObjects(gameObjects);
+            }
+            if (GUILayout.Button("Create Folder(s) for selected"))
+            {
+                var gameObjects = Selection.gameObjects;
+                a.FoldersForSelected(gameObjects);
+            }
         }
     }
 }
