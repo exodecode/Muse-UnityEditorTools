@@ -8,6 +8,7 @@ namespace Muse
         {
             DestroyImmediate(col);
         }
+
         public void DestroyImmediateGameObject(GameObject g)
         {
             DestroyImmediate(g);
