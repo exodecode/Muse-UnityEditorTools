@@ -1,6 +1,7 @@
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using static Muse.EditorUtil;
 
 namespace Muse
 {
@@ -22,17 +23,6 @@ namespace Muse
                     t.SetParent(p);
                 }
             }
-        }
-
-        [MenuItem("Tools/Muse/GameObject/Place/In A Line")]
-        static void PlaceObjectsInALine()
-        {
-            var transforms = GetSelectedTransforms();
-            var length = transforms.Length;
-            var sorted = transforms.OrderBy(a => a.name).ToArray();
-
-            for (int i = 0; i < transforms.Length; i++)
-                sorted[i].localPosition = new Vector3(i * 2, 0, 0);
         }
 
         [MenuItem("Tools/Muse/GameObject/Sort/Texture")]
@@ -138,14 +128,6 @@ namespace Muse
                 bc.center = bounds.center - t.position;
                 bc.size = bounds.size;
             }
-        }
-
-        public static Transform[] GetSelectedTransforms()
-        {
-            var gameObjects = Selection.gameObjects;
-            var transforms = gameObjects.Select(g => g.transform).ToArray();
-
-            return transforms;
         }
     }
 }
