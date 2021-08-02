@@ -9,6 +9,7 @@ namespace Muse
         public GameObject baseGameObject;
         public string suffix;
         public bool zeroOutChildTransforms;
+        public int layer = 0;
 
         public void FromSelectedModels(GameObject[] children)
         {
@@ -24,6 +25,7 @@ namespace Muse
                 basePrefab.name = child.name;
 
                 prop.transform.SetParent(basePrefab.transform);
+                basePrefab.layer = layer;
 
                 var path = AssetDatabase.GetAssetPath(child);
                 var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
@@ -66,6 +68,7 @@ namespace Muse
 
                 basePrefab.transform.position = Vector3.zero;
                 basePrefab.transform.rotation = Quaternion.identity;
+                basePrefab.layer = layer;
                 var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
 
                 var variant = PrefabUtility.InstantiatePrefab(obj) as GameObject;
