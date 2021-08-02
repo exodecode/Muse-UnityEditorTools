@@ -6,12 +6,7 @@ namespace Muse
 {
     public static class EditorUtil
     {
-        public static Transform[] GetSelectedTransforms()
-        {
-            var gameObjects = Selection.gameObjects;
-            var transforms = gameObjects.Select(g => g.transform).ToArray();
-
-            return transforms;
-        }
+        public static Transform[] GetSelectedTransforms() =>
+            Selection.gameObjects.Select(g => g.transform).ToArray();
     }
 }

@@ -7,7 +7,7 @@ namespace Muse
 {
     public static class PlacementTools
     {
-        [MenuItem("Tools/Muse/PropPlacement/Set Random Y Rotation")]
+        [MenuItem("Tools/Muse/Placement/Set Random Y Rotation")]
         public static void SetRandomYRotation()
         {
             var gameObjects = Selection.gameObjects;
@@ -16,7 +16,7 @@ namespace Muse
                     Quaternion.Euler(0, Random.Range(0f, 360f), 0);
         }
 
-        [MenuItem("Tools/Muse/GameObject/Place/In A Line")]
+        [MenuItem("Tools/Muse/Placement/Place In A Line")]
         static void PlaceObjectsInALine()
         {
             var transforms = GetSelectedTransforms();
