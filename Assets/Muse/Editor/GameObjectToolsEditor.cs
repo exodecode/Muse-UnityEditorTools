@@ -24,5 +24,8 @@ namespace Muse
 
         [MenuItem("Tools/Muse/GameObject/Collider/Try Add and Adjust Box Collider Based Children")]
         static void AddBoxColliderBasedOnChildMeshesItem() => AddBoxColliderBasedOnChildMeshes(GetSelectedTransforms());
+
+        [MenuItem("Tools/Muse/Organization/Create Folders For Selected assets")]
+        static void FoldersForSelectedItem() => FoldersForSelected(Selection.gameObjects);
     }
 }

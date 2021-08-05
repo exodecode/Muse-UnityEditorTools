@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEditor;
-using System.IO;
 
 namespace Muse
 {
@@ -9,7 +8,6 @@ namespace Muse
         public GameObject baseGameObject;
         public string suffix;
         public bool zeroOutChildTransforms;
-        public int layer = 0;
 
         public void FromSelectedModels(GameObject[] children)
         {
@@ -25,7 +23,6 @@ namespace Muse
                 basePrefab.name = child.name;
 
                 prop.transform.SetParent(basePrefab.transform);
-                basePrefab.layer = layer;
 
                 var path = AssetDatabase.GetAssetPath(child);
                 var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
@@ -68,7 +65,7 @@ namespace Muse
 
                 basePrefab.transform.position = Vector3.zero;
                 basePrefab.transform.rotation = Quaternion.identity;
-                basePrefab.layer = layer;
+
                 var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
 
                 var variant = PrefabUtility.InstantiatePrefab(obj) as GameObject;
@@ -80,47 +77,6 @@ namespace Muse
             }
 
             helper.Finish();
-        }
-
-        public void FoldersForSelected(GameObject[] children)
-        {
-            for (int i = 0; i < children.Length; i++)
-            {
-                var child = children[i];
-                var dir = child.name + '/';
-                var dataPath = Application.dataPath;
-                var assetPath = AssetDatabase.GetAssetPath(child);
-                var nameWithFileType = assetPath.Substring(assetPath.LastIndexOf('/') + 1, assetPath.Length - (assetPath.LastIndexOf('/') + 1));
-                var fullPath = dataPath + assetPath.Substring(assetPath.IndexOf('/'), assetPath.Length - assetPath.IndexOf('/'));
-                var directoryPath = fullPath.Substring(0, fullPath.LastIndexOf('/') + 1);
-
-                var parentDirecory = Path.GetDirectoryName(assetPath).Replace('\\', '/');
-                var parentDirecoryName = parentDirecory.Substring(parentDirecory.LastIndexOf('/') + 1, parentDirecory.Length - (parentDirecory.LastIndexOf('/') + 1));
-                var localPath = assetPath.Substring(0, assetPath.LastIndexOf('/'));
-
-                if (parentDirecoryName != child.name)
-                {
-                    var newDirectoryPath = directoryPath + dir;
-                    System.IO.Directory.CreateDirectory(newDirectoryPath);
-                }
-                else
-                    Debug.LogWarning(nameWithFileType + " is already in a folder with the same name!");
-            }
-
-            AssetDatabase.Refresh();
-
-            for (int i = 0; i < children.Length; i++)
-            {
-                var child = children[i];
-                var dir = child.name + '/';
-                var assetPath = AssetDatabase.GetAssetPath(child);
-                var nameWithFileType = assetPath.Substring(assetPath.LastIndexOf('/') + 1, assetPath.Length - (assetPath.LastIndexOf('/') + 1));
-                var newAssetPath = assetPath.Substring(0, assetPath.LastIndexOf('/') + 1) + dir + nameWithFileType;
-
-                AssetDatabase.MoveAsset(assetPath, newAssetPath);
-            }
-
-            AssetDatabase.Refresh();
         }
     }
 }

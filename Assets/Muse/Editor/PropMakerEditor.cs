@@ -3,6 +3,8 @@ using UnityEngine;
 
 namespace Muse
 {
+    using static EditorUtils;
+
     [CustomEditor(typeof(PropMaker))]
     public class PropMakerEditor : Editor
     {
@@ -10,6 +12,9 @@ namespace Muse
         {
             base.OnInspectorGUI();
             var propMaker = target as PropMaker;
+
+            EditorGUILayout.Space();
+
             if (GUILayout.Button("Make Prefab Variant From Selected Models"))
             {
                 var gameObjects = Selection.gameObjects;
@@ -22,8 +27,7 @@ namespace Muse
             }
             if (GUILayout.Button("Create Folder(s) for selected"))
             {
-                var gameObjects = Selection.gameObjects;
-                propMaker.FoldersForSelected(gameObjects);
+                FoldersForSelected(Selection.gameObjects);
             }
         }
     }

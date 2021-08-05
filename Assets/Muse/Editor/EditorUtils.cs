@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -95,6 +96,47 @@ namespace Muse
                     .transform
                     .SetParent(replacementsParent.transform);
             }
+        }
+
+        public static void FoldersForSelected(GameObject[] children)
+        {
+            for (int i = 0; i < children.Length; i++)
+            {
+                var child = children[i];
+                var dir = child.name + '/';
+                var dataPath = Application.dataPath;
+                var assetPath = AssetDatabase.GetAssetPath(child);
+                var nameWithFileType = assetPath.Substring(assetPath.LastIndexOf('/') + 1, assetPath.Length - (assetPath.LastIndexOf('/') + 1));
+                var fullPath = dataPath + assetPath.Substring(assetPath.IndexOf('/'), assetPath.Length - assetPath.IndexOf('/'));
+                var directoryPath = fullPath.Substring(0, fullPath.LastIndexOf('/') + 1);
+
+                var parentDirecory = Path.GetDirectoryName(assetPath).Replace('\\', '/');
+                var parentDirecoryName = parentDirecory.Substring(parentDirecory.LastIndexOf('/') + 1, parentDirecory.Length - (parentDirecory.LastIndexOf('/') + 1));
+                var localPath = assetPath.Substring(0, assetPath.LastIndexOf('/'));
+
+                if (parentDirecoryName != child.name)
+                {
+                    var newDirectoryPath = directoryPath + dir;
+                    System.IO.Directory.CreateDirectory(newDirectoryPath);
+                }
+                else
+                    Debug.LogWarning(nameWithFileType + " is already in a folder with the same name!");
+            }
+
+            AssetDatabase.Refresh();
+
+            for (int i = 0; i < children.Length; i++)
+            {
+                var child = children[i];
+                var dir = child.name + '/';
+                var assetPath = AssetDatabase.GetAssetPath(child);
+                var nameWithFileType = assetPath.Substring(assetPath.LastIndexOf('/') + 1, assetPath.Length - (assetPath.LastIndexOf('/') + 1));
+                var newAssetPath = assetPath.Substring(0, assetPath.LastIndexOf('/') + 1) + dir + nameWithFileType;
+
+                AssetDatabase.MoveAsset(assetPath, newAssetPath);
+            }
+
+            AssetDatabase.Refresh();
         }
     }
 }
