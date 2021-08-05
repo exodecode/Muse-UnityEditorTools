@@ -3,14 +3,10 @@ using System.Linq;
 
 namespace Muse
 {
-    // using static EditorUtils;
-
     public static class GameObjectTools
     {
         public static void MakeAndAssignToParentWithSameName(Transform[] transforms)
         {
-            // var transforms = GetSelectedTransforms();
-
             var length = transforms.Length;
 
             for (int i = 0; i < length; i++)
@@ -26,8 +22,6 @@ namespace Muse
 
         public static void SortGameObjectsBasedOnHavingTexture(Transform[] transforms)
         {
-            // var transforms = GetSelectedTransforms();
-
             var hasTextureParent = new GameObject("Has Texture").transform;
             var noTextureParent = new GameObject("Needs Texture").transform;
 
@@ -43,7 +37,6 @@ namespace Muse
 
         public static void SortGameObjectsAlpabetically(Transform[] transforms)
         {
-            // var transforms = GetSelectedTransforms();
             var length = transforms.Length;
             var sorted = transforms.OrderBy(a => a.name).ToArray();
 
@@ -53,8 +46,6 @@ namespace Muse
 
         public static void AddMeshCollidersBasedOnChildMeshes(Transform[] transforms)
         {
-            // var transforms = GetSelectedTransforms();
-
             for (int i = 0; i < transforms.Length; i++)
             {
                 var t = transforms[i];
@@ -70,7 +61,6 @@ namespace Muse
 
         public static void RemoveAllColliders(Transform[] transforms)
         {
-            // var transforms = GetSelectedTransforms();
             var go = new GameObject("Helper");
             var helper = go.AddComponent<GameObjectToolHelper>();
 
@@ -90,8 +80,6 @@ namespace Muse
 
         public static void AddBoxColliderBasedOnChildMeshes(Transform[] transforms)
         {
-            // var transforms = GetSelectedTransforms();
-
             for (int i = 0; i < transforms.Length; i++)
             {
                 var hasBounds = false;

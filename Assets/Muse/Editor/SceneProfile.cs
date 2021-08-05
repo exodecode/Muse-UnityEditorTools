@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.SceneManagement;
-using UnityEngine.SceneManagement;
-using System.Linq;
 
 namespace Muse
 {

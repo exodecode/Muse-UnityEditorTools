@@ -1,7 +1,6 @@
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Muse
 {
@@ -40,14 +39,9 @@ namespace Muse
         {
             var meshFilters = model.GetComponentsInChildren<MeshFilter>();
             var meshes = meshFilters.Select(meshFilter => meshFilter.sharedMesh);
-            // var intactMesh = meshes.Skip(intactPropIndex).First();
-            // var cellMeshes = meshes.Where(mesh => mesh != intactMesh);
 
-            // var material = meshFilters[intactPropIndex].GetComponent<Renderer>().sharedMaterial;
             var material = meshFilters[0].GetComponent<Renderer>().sharedMaterial;
 
-            // var intact = CreateGameObjectWithMesh(intactMesh, material);
-            // var cells = cellMeshes.Select(cellMesh => CreateGameObjectWithMesh(cellMesh, material)).ToList();
             var cells = meshes.Select(mesh => CreateGameObjectWithMesh(mesh, material)).ToList();
 
             cells.ForEach(cell =>
@@ -59,14 +53,6 @@ namespace Muse
 
             var assetPath = AssetDatabase.GetAssetPath(model);
 
-            // var intactVariantGroup =
-            //     CreatePrefabVariantFromGameObjectAndBase(
-            //         new GameObject[1] { intact },
-            //         intactBase,
-            //         assetPath,
-            //         intact.name + intactSuffix,
-            //         destroyedSuffix);
-
             var destroyedVariantGroup =
                 CreatePrefabVariantFromGameObjectAndBase(
                     cells.ToArray(),
@@ -75,11 +61,9 @@ namespace Muse
                     model.name,
                     nameSuffix);
 
-            // var intactVariant = intactVariantGroup.variant;
             var destroyedVariant = destroyedVariantGroup.variant;
             var helper = new GameObject("Helper").AddComponent<GameObjectToolHelper>();
 
-            // helper.DestroyImmediateGameObject(intactVariantGroup.extra);
             helper.DestroyImmediateGameObject(destroyedVariantGroup.extra);
             helper.Finish();
 
