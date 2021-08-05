@@ -123,29 +123,4 @@ namespace Muse
             AssetDatabase.Refresh();
         }
     }
-
-    [CustomEditor(typeof(PropMaker))]
-    public class PropMakerEditor : Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-            var a = target as PropMaker;
-            if (GUILayout.Button("Make Prefab Variant From Selected Models"))
-            {
-                var gameObjects = Selection.gameObjects;
-                a.FromSelectedModels(gameObjects);
-            }
-            if (GUILayout.Button("Make Prefab Variant From Selected GameObjects"))
-            {
-                var gameObjects = Selection.gameObjects;
-                a.FromSelectedGameObjects(gameObjects);
-            }
-            if (GUILayout.Button("Create Folder(s) for selected"))
-            {
-                var gameObjects = Selection.gameObjects;
-                a.FoldersForSelected(gameObjects);
-            }
-        }
-    }
 }

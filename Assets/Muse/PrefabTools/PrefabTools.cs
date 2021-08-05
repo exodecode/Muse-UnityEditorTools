@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -40,19 +38,4 @@ namespace Muse
             }
         }
     }
-
-    [CustomEditor(typeof(PrefabTools))]
-    public class PrefabToolsEditor : Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-            var a = target as PrefabTools;
-            EditorGUILayout.Space();
-
-            if (GUILayout.Button("Grab All PrefabsFromDirectories"))
-                a.GrabAllPrefabsFromDirectories();
-        }
-    }
-
 }

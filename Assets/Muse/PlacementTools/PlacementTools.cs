@@ -1,25 +1,19 @@
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
-using static Muse.EditorUtil;
 
 namespace Muse
 {
     public static class PlacementTools
     {
-        [MenuItem("Tools/Muse/Placement/Set Random Y Rotation")]
-        public static void SetRandomYRotation()
+        public static void SetRandomYRotation(Transform[] transforms)
         {
-            var gameObjects = Selection.gameObjects;
-            for (int i = 0; i < gameObjects.Length; i++)
-                gameObjects[i].transform.rotation =
+            for (int i = 0; i < transforms.Length; i++)
+                transforms[i].rotation =
                     Quaternion.Euler(0, Random.Range(0f, 360f), 0);
         }
 
-        [MenuItem("Tools/Muse/Placement/Place In A Line")]
-        static void PlaceObjectsInALine()
+        public static void PlaceObjectsInALine(Transform[] transforms)
         {
-            var transforms = GetSelectedTransforms();
             var length = transforms.Length;
             var sorted = transforms.OrderBy(a => a.name).ToArray();
 

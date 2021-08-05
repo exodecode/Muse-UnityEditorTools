@@ -1,16 +1,15 @@
-using System.Linq;
-using UnityEditor;
 using UnityEngine;
-using static Muse.EditorUtil;
+using System.Linq;
 
 namespace Muse
 {
-    static class GameObjectTools
+    // using static EditorUtils;
+
+    public static class GameObjectTools
     {
-        [MenuItem("Tools/Muse/GameObject/Assign To Parent With Same Name")]
-        static void MakeAndAssignToParentWithSameName()
+        public static void MakeAndAssignToParentWithSameName(Transform[] transforms)
         {
-            var transforms = GetSelectedTransforms();
+            // var transforms = GetSelectedTransforms();
 
             var length = transforms.Length;
 
@@ -25,10 +24,9 @@ namespace Muse
             }
         }
 
-        [MenuItem("Tools/Muse/GameObject/Sort/Texture")]
-        static void SortGameObjectsBasedOnHavingTexture()
+        public static void SortGameObjectsBasedOnHavingTexture(Transform[] transforms)
         {
-            var transforms = GetSelectedTransforms();
+            // var transforms = GetSelectedTransforms();
 
             var hasTextureParent = new GameObject("Has Texture").transform;
             var noTextureParent = new GameObject("Needs Texture").transform;
@@ -43,10 +41,9 @@ namespace Muse
             }
         }
 
-        [MenuItem("Tools/Muse/GameObject/Sort/Alpabetically")]
-        static void SortGameObjectsAlpabetically()
+        public static void SortGameObjectsAlpabetically(Transform[] transforms)
         {
-            var transforms = GetSelectedTransforms();
+            // var transforms = GetSelectedTransforms();
             var length = transforms.Length;
             var sorted = transforms.OrderBy(a => a.name).ToArray();
 
@@ -54,10 +51,9 @@ namespace Muse
                 sorted[i].SetSiblingIndex(i);
         }
 
-        [MenuItem("Tools/Muse/GameObject/Collider/Add Mesh Colliders Based On Child Meshes")]
-        static void AddMeshCollidersBasedOnChildMeshes()
+        public static void AddMeshCollidersBasedOnChildMeshes(Transform[] transforms)
         {
-            var transforms = GetSelectedTransforms();
+            // var transforms = GetSelectedTransforms();
 
             for (int i = 0; i < transforms.Length; i++)
             {
@@ -72,10 +68,9 @@ namespace Muse
             }
         }
 
-        [MenuItem("Tools/Muse/GameObject/Collider/Remove All Colliders")]
-        static void RemoveAllColliders()
+        public static void RemoveAllColliders(Transform[] transforms)
         {
-            var transforms = GetSelectedTransforms();
+            // var transforms = GetSelectedTransforms();
             var go = new GameObject("Helper");
             var helper = go.AddComponent<GameObjectToolHelper>();
 
@@ -93,10 +88,9 @@ namespace Muse
             helper.Finish();
         }
 
-        [MenuItem("Tools/Muse/GameObject/Collider/Try Add and Adjust Box Collider Based Children")]
-        static void AddBoxColliderBasedOnChildMeshes()
+        public static void AddBoxColliderBasedOnChildMeshes(Transform[] transforms)
         {
-            var transforms = GetSelectedTransforms();
+            // var transforms = GetSelectedTransforms();
 
             for (int i = 0; i < transforms.Length; i++)
             {
