@@ -29,13 +29,16 @@ namespace Muse
                 g.layer = basePrefab.layer;
             }
 
-            var pathWithName = assetPath.Substring(0, assetPath.LastIndexOf('/') + 1) + name + ".prefab";
+            var pathWithName = assetPath.Substring(0, assetPath.LastIndexOf('/') + 1) + name + suffix + ".prefab";
             var variant = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
 
             return (variant, basePrefab);
         }
 
-        public static void CreateDestructiblePropPrefabFromModelAsset(GameObject model, GameObject baseDestructiblePropPrefab, string nameSuffix = "")
+        public static void CreateDestructiblePropPrefabFromModelAsset(
+            GameObject model,
+            GameObject baseDestructiblePropPrefab,
+            string nameSuffix)
         {
             var meshFilters = model.GetComponentsInChildren<MeshFilter>();
             var meshes = meshFilters.Select(meshFilter => meshFilter.sharedMesh);

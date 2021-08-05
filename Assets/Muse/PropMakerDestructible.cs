@@ -4,7 +4,7 @@ namespace Muse
 {
     public class PropMakerDestructible : MonoBehaviour
     {
-        public GameObject model;
+        public GameObject destroyedModel;
         public GameObject destroyedBase;
         public string destroyedSuffix;
     }

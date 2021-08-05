@@ -12,7 +12,7 @@ namespace Muse
         {
             base.OnInspectorGUI();
             var propMakerDestructible = target as PropMakerDestructible;
-            var model = propMakerDestructible.model;
+            var model = propMakerDestructible.destroyedModel;
             var basePrefab = propMakerDestructible.destroyedBase;
             var nameSuffix = propMakerDestructible.destroyedSuffix;
 
