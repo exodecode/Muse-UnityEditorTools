@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4740107470743574737}
   - component: {fileID: 4363467481532365115}
-  m_Layer: 0
-  m_Name: _IcoSphereBase
+  m_Layer: 4
+  m_Name: _baseDestroyed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

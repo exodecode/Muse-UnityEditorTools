@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: fac9f038754fe0445960ba319d285fd6
+guid: 0fba4eb4636212c4ba79caea9d47dc15
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
@@ -7,12 +7,12 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Mat
+      name: IcoSphere
     second: {fileID: 2100000, guid: 405189ee884536d42aeecd26002413d6, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
-    materialSearch: 1
+    materialSearch: 2
     materialLocation: 1
   animations:
     legacyGenerateAnimations: 4
