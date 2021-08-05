@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d39450cc66d353345bfcea00dddd24f9
+guid: 296b03dedcf60e847b29804c79c3d0b4
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
@@ -7,7 +7,7 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: IcoSphere
+      name: icosphere
     second: {fileID: 2100000, guid: 405189ee884536d42aeecd26002413d6, type: 2}
   materials:
     materialImportMode: 2
