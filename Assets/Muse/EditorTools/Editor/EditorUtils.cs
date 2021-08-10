@@ -74,30 +74,6 @@ namespace Muse
             AssetDatabase.Refresh();
         }
 
-        public static void ReplaceSelected(Transform[] transforms, GameObject prefabReplacement, Transform parentTransform)
-        {
-            var selectedGameObjects = Selection.gameObjects;
-            var length = selectedGameObjects.Length;
-            var replacementsParent = new GameObject("[Replacements]");
-
-            for (int i = 0; i < length; i++)
-            {
-                var go = selectedGameObjects[i];
-                go.transform.SetParent(parentTransform);
-
-                var position = go.transform.position;
-                var rotation = go.transform.rotation;
-                var replacement = PrefabUtility.InstantiatePrefab(prefabReplacement) as GameObject;
-
-                replacement.transform.position = position;
-                replacement.transform.rotation = rotation;
-
-                replacement
-                    .transform
-                    .SetParent(replacementsParent.transform);
-            }
-        }
-
         public static void FoldersForSelected(GameObject[] children)
         {
             for (int i = 0; i < children.Length; i++)

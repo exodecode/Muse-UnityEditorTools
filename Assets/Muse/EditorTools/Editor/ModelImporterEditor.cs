@@ -16,8 +16,8 @@ namespace Muse
 
             EditorGUILayout.Space();
 
-            if (GUILayout.Button("Replace Selected GameObjects"))
-                ReplaceSelected(GetSelectedTransforms(), prefabReplacement, modelImporter.transform);
+            // if (GUILayout.Button("Replace Selected GameObjects"))
+            // ReplaceSelected(GetSelectedTransforms(), prefabReplacement, modelImporter.transform);
         }
     }
 }
