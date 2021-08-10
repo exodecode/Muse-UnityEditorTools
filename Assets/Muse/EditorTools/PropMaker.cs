@@ -1,82 +1,82 @@
-using UnityEngine;
-using UnityEditor;
+// using UnityEngine;
+// using UnityEditor;
 
-namespace Muse
-{
-    public class PropMaker : MonoBehaviour
-    {
-        public GameObject baseGameObject;
-        public string suffix;
-        public bool zeroOutChildTransforms;
+// namespace Muse
+// {
+//     public class PropMaker : MonoBehaviour
+//     {
+//         public GameObject baseGameObject;
+//         public string suffix;
+//         public bool zeroOutChildTransforms;
 
-        public void FromSelectedModels(GameObject[] children)
-        {
-            var helper = new GameObject("Helper").AddComponent<GameObjectToolHelper>();
+//         public void FromSelectedModels(GameObject[] children)
+//         {
+//             var helper = new GameObject("Helper").AddComponent<GameObjectToolHelper>();
 
-            for (int i = 0; i < children.Length; i++)
-            {
-                var child = children[i];
+//             for (int i = 0; i < children.Length; i++)
+//             {
+//                 var child = children[i];
 
-                var basePrefab = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
-                var prop = PrefabUtility.InstantiatePrefab(child) as GameObject;
+//                 var basePrefab = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
+//                 var prop = PrefabUtility.InstantiatePrefab(child) as GameObject;
 
-                basePrefab.name = child.name;
+//                 basePrefab.name = child.name;
 
-                prop.transform.SetParent(basePrefab.transform);
+//                 prop.transform.SetParent(basePrefab.transform);
 
-                var path = AssetDatabase.GetAssetPath(child);
-                var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
-                var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
+//                 var path = AssetDatabase.GetAssetPath(child);
+//                 var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
+//                 var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
 
-                helper.DestroyImmediateGameObject(basePrefab);
-            }
+//                 helper.DestroyImmediateGameObject(basePrefab);
+//             }
 
-            helper.Finish();
-        }
+//             helper.Finish();
+//         }
 
-        public void FromSelectedGameObjects(GameObject[] children)
-        {
-            var helper = new GameObject("Helper").AddComponent<GameObjectToolHelper>();
+//         public void FromSelectedGameObjects(GameObject[] children)
+//         {
+//             var helper = new GameObject("Helper").AddComponent<GameObjectToolHelper>();
 
-            for (int i = 0; i < children.Length; i++)
-            {
-                var child = children[i];
-                var basePrefab = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
+//             for (int i = 0; i < children.Length; i++)
+//             {
+//                 var child = children[i];
+//                 var basePrefab = PrefabUtility.InstantiatePrefab(baseGameObject) as GameObject;
 
-                if (zeroOutChildTransforms)
-                {
-                    basePrefab.transform.position = child.transform.position;
-                    basePrefab.transform.rotation = child.transform.rotation;
-                }
+//                 if (zeroOutChildTransforms)
+//                 {
+//                     basePrefab.transform.position = child.transform.position;
+//                     basePrefab.transform.rotation = child.transform.rotation;
+//                 }
 
-                var copy = Instantiate<GameObject>(child, basePrefab.transform, false);
-                copy.name = child.name;
+//                 var copy = Instantiate<GameObject>(child, basePrefab.transform, false);
+//                 copy.name = child.name;
 
-                if (zeroOutChildTransforms)
-                {
-                    copy.transform.localPosition = Vector3.zero;
-                    copy.transform.localRotation = Quaternion.identity;
-                }
+//                 if (zeroOutChildTransforms)
+//                 {
+//                     copy.transform.localPosition = Vector3.zero;
+//                     copy.transform.localRotation = Quaternion.identity;
+//                 }
 
-                basePrefab.name = copy.name;
+//                 basePrefab.name = copy.name;
 
-                var path = "Assets/";
-                var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
+//                 var path = "Assets/";
+//                 var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
 
-                basePrefab.transform.position = Vector3.zero;
-                basePrefab.transform.rotation = Quaternion.identity;
+//                 basePrefab.transform.position = Vector3.zero;
+//                 basePrefab.transform.rotation = Quaternion.identity;
 
-                var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
+//                 var obj = PrefabUtility.SaveAsPrefabAsset(basePrefab, pathWithName);
 
-                var variant = PrefabUtility.InstantiatePrefab(obj) as GameObject;
+//                 var variant = PrefabUtility.InstantiatePrefab(obj) as GameObject;
 
-                variant.transform.position = child.transform.position;
-                variant.transform.rotation = child.transform.rotation;
+//                 variant.transform.position = child.transform.position;
+//                 variant.transform.rotation = child.transform.rotation;
 
-                helper.DestroyImmediateGameObject(basePrefab);
-            }
+//                 helper.DestroyImmediateGameObject(basePrefab);
+//             }
 
-            helper.Finish();
-        }
-    }
-}
+//             helper.Finish();
+//         }
+//     }
+// }

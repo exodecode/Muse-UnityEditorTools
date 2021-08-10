@@ -5,12 +5,12 @@ namespace Muse
 {
     using static EditorUtils;
 
-    public class GameObjectReplacerEditorWindow : EditorWindow
+    public class GameObjectSwapperEditorWindow : EditorWindow
     {
         public GameObject replacement;
 
-        [MenuItem("Tools/Muse/GameObject Replacer")]
-        static void ShowWindow() => GetWindow<GameObjectReplacerEditorWindow>("GameObject Replacer");
+        [MenuItem("Tools/Muse/GameObject Swapper")]
+        static void ShowWindow() => GetWindow<GameObjectSwapperEditorWindow>("GameObject Swapper");
 
         void OnEnable() => Selection.selectionChanged += Repaint;
         void OnDisable() => Selection.selectionChanged -= Repaint;
