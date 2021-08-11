@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
+/* Mark stuff dirty after changes are applied so the scene is saved correctly */
 namespace Muse
 {
     using static EditorUtils;
@@ -24,7 +25,7 @@ namespace Muse
                 if (GUILayout.Button("Remove All Colliders From Selections"))
                     RemoveAllColliders(GetSelectedTransforms());
                 if (GUILayout.Button("Add Box Collider Based On Child Bounds"))
-                    AddMeshCollidersBasedOnChildMeshes(GetSelectedTransforms());
+                    AddBoxColliderBasedOnChildMeshes(GetSelectedTransforms());
             }
         }
 
