@@ -8,12 +8,12 @@ namespace Muse
     public class ColliderAdjusterEditorWindow : EditorWindow
     {
         [MenuItem("Tools/Muse/Collider Adjuster")]
-        private static void ShowWindow() => GetWindow<ColliderAdjusterEditorWindow>("Collider Adjuster");
+        static void ShowWindow() => GetWindow<ColliderAdjusterEditorWindow>("Collider Adjuster");
 
         void OnEnable() => Selection.selectionChanged += Repaint;
         void OnDisable() => Selection.selectionChanged -= Repaint;
 
-        private void OnGUI()
+        void OnGUI()
         {
             EditorGUILayout.Space();
 
@@ -28,7 +28,7 @@ namespace Muse
             }
         }
 
-        public static void AddMeshCollidersBasedOnChildMeshes(Transform[] transforms)
+        static void AddMeshCollidersBasedOnChildMeshes(Transform[] transforms)
         {
             for (int i = 0; i < transforms.Length; i++)
             {
@@ -43,7 +43,7 @@ namespace Muse
             }
         }
 
-        public static void RemoveAllColliders(Transform[] transforms)
+        static void RemoveAllColliders(Transform[] transforms)
         {
             for (int i = 0; i < transforms.Length; i++)
             {
@@ -57,7 +57,7 @@ namespace Muse
             }
         }
 
-        public static void AddBoxColliderBasedOnChildMeshes(Transform[] transforms)
+        static void AddBoxColliderBasedOnChildMeshes(Transform[] transforms)
         {
             for (int i = 0; i < transforms.Length; i++)
             {

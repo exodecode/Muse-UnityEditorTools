@@ -7,7 +7,7 @@ namespace Muse
 
     public class GameObjectSwapperEditorWindow : EditorWindow
     {
-        public GameObject replacement;
+        [SerializeField] GameObject replacement;
 
         [MenuItem("Tools/Muse/GameObject Swapper")]
         static void ShowWindow() => GetWindow<GameObjectSwapperEditorWindow>("GameObject Swapper");
@@ -32,7 +32,7 @@ namespace Muse
             }
         }
 
-        public static void ReplaceSelected(Transform[] transforms, GameObject prefabReplacement)
+        static void ReplaceSelected(Transform[] transforms, GameObject prefabReplacement)
         {
             var selectedGameObjects = Selection.gameObjects;
             var length = selectedGameObjects.Length;

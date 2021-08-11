@@ -24,43 +24,46 @@ namespace Muse
             {
                 basePrefab = EditorGUILayout.ObjectField("Base Prefab", basePrefab, typeof(GameObject), false) as GameObject;
                 nameSuffix = EditorGUILayout.TextField("Name Suffix", nameSuffix);
-                clearChildTransforms = EditorGUILayout.Toggle("Clear Child Transforms", clearChildTransforms);
             }
 
+            EditorGUILayout.Space();
             EditorGUILayout.Space();
 
             using (new EditorGUI.DisabledScope(Selection.gameObjects.Length == 0 || basePrefab == null))
             {
                 var persistantSelections =
                     Selection.gameObjects
-                    .ToList()
-                    .Where(selection => EditorUtility.IsPersistent(selection))
-                    .ToList();
+                    .Where(s => EditorUtility.IsPersistent(s))
+                    .ToArray();
 
-                var hasPersistantSelections = persistantSelections.Count > 0;
+                var modelSelections =
+                    persistantSelections
+                    .Select(selection => (selection, path: AssetDatabase.GetAssetPath(selection)))
+                    .Where(pair =>
+                    {
+                        var path = pair.path;
+                        var fileType = path.Substring(path.LastIndexOf("."));
+                        return acceptedModelFileTypes.Contains(fileType);
+                    })
+                    .Select(p => p.selection)
+                    .ToArray();
 
-                using (new EditorGUI.DisabledScope(hasPersistantSelections))
+                using (new EditorGUI.DisabledScope(persistantSelections.Length > 0))
                 {
-                    if (GUILayout.Button("Create Prefabs Variants From Selected GameObjects"))
-                        CreateVariantsFromSelectedGameObjects(
-                            Selection.gameObjects,
-                            basePrefab,
-                            nameSuffix,
-                            clearChildTransforms);
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        if (GUILayout.Button("Create Prefabs Variants From Selected GameObjects"))
+                            CreateVariantsFromSelectedGameObjects(
+                                Selection.gameObjects,
+                                basePrefab,
+                                nameSuffix,
+                                clearChildTransforms);
+
+                        clearChildTransforms = EditorGUILayout.Toggle("Clear Child Transforms", clearChildTransforms);
+                    }
                 }
 
-                var modelSelections = hasPersistantSelections ?
-                    persistantSelections
-                        .Select(persistantSelection => (persistantSelection, AssetDatabase.GetAssetPath(persistantSelection)))
-                        .Where(pair =>
-                        {
-                            var path = pair.Item2;
-                            var fileType = path.Substring(path.LastIndexOf("."));
-                            return acceptedModelFileTypes.Contains(fileType);
-                        })
-                        .Select(p => p.persistantSelection)
-                        .ToArray()
-                    : new GameObject[0];
+                EditorGUILayout.Space();
 
                 using (new EditorGUI.DisabledScope(modelSelections.Length == 0))
                 {
