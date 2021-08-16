@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEditor;
 
-/* Mark stuff dirty after changes are applied so the scene is saved correctly */
 namespace Muse
 {
     using static EditorUtils;
@@ -38,7 +37,8 @@ namespace Muse
 
                 for (int j = 0; j < meshFilters.Length; j++)
                 {
-                    var mc = t.gameObject.AddComponent<MeshCollider>();
+                    var g = t.gameObject;
+                    var mc = Undo.AddComponent<MeshCollider>(g);
                     mc.sharedMesh = meshFilters[j].sharedMesh;
                 }
             }
@@ -67,8 +67,12 @@ namespace Muse
                 var renderers = t.GetComponentsInChildren<MeshRenderer>();
 
                 var bc = t.GetComponent<BoxCollider>();
+
                 if (bc == null)
-                    bc = t.gameObject.AddComponent<BoxCollider>();
+                {
+                    var g = t.gameObject;
+                    bc = Undo.AddComponent<BoxCollider>(g);
+                }
 
                 Bounds bounds = new Bounds(Vector3.zero, Vector3.zero);
 

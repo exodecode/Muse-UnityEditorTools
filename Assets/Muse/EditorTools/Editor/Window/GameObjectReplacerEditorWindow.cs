@@ -43,7 +43,7 @@ namespace Muse
 
             var textStyle = new GUIStyle("Box");
             textStyle.fontSize = 14;
-            // GUILayout.Label("Selected GameObjects", new GUIStyle("Box"));
+
             GUILayout.Label("Selected GameObjects", textStyle);
 
             using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPos, scrollStyle, GUILayout.Height(300)))
