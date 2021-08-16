@@ -11,5 +11,6 @@ namespace Muse
         public const string SHORTCUT_WINDOW_FOLDER = SHORTCUT_KEYS_PREFIX + "f";
         public const string SHORTCUT_WINDOW_PREFABVARIANT = SHORTCUT_KEYS_PREFIX + "v";
         public const string SHORTCUT_WINDOW_SCENEPROFILE = SHORTCUT_KEYS_PREFIX + "s";
+        public const string SHORTCUT_WINDOW_REPLACER = SHORTCUT_KEYS_PREFIX + "r";
     }
 }

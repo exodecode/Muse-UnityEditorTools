@@ -1,16 +1,19 @@
 using UnityEngine;
 using UnityEditor;
+using System.Linq;
 
 namespace Muse
 {
     using static EditorUtils;
+    using static ShortcutKeys;
 
-    public class GameObjectSwapperEditorWindow : EditorWindow
+    public class GameObjectReplacerEditorWindow : EditorWindow
     {
         [SerializeField] GameObject replacement;
+        Vector2 scrollPos;
 
-        [MenuItem("Tools/Muse/GameObject Swapper")]
-        static void ShowWindow() => GetWindow<GameObjectSwapperEditorWindow>("GameObject Swapper");
+        [MenuItem("Tools/Muse/GameObject Replacer" + SHORTCUT_WINDOW_REPLACER)]
+        static void ShowWindow() => GetWindow<GameObjectReplacerEditorWindow>("GameObject Replacer");
 
         void OnEnable() => Selection.selectionChanged += Repaint;
         void OnDisable() => Selection.selectionChanged -= Repaint;
@@ -29,6 +32,28 @@ namespace Muse
                 {
                     ReplaceSelected(GetSelectedTransforms(), replacement);
                 }
+            }
+
+            var scrollStyle = new GUIStyle("HelpBox");
+            scrollStyle.fontSize = 14;
+            scrollStyle.alignment = TextAnchor.MiddleLeft;
+            scrollStyle.wordWrap = false;
+
+            GUILayout.FlexibleSpace();
+
+            var textStyle = new GUIStyle("Box");
+            textStyle.fontSize = 14;
+            // GUILayout.Label("Selected GameObjects", new GUIStyle("Box"));
+            GUILayout.Label("Selected GameObjects", textStyle);
+
+            using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPos, scrollStyle, GUILayout.Height(300)))
+            {
+                scrollPos = scrollView.scrollPosition;
+
+                textStyle = new GUIStyle("WhiteLabel");
+                textStyle.fontSize = 14;
+
+                GUILayout.Label(FlattenStringArray(Selection.gameObjects.Select(g => g.name).ToArray()), textStyle);
             }
         }
 
@@ -58,5 +83,8 @@ namespace Muse
 
             Undo.RegisterCreatedObjectUndo(replacementsParent, "Create replacement parent");
         }
+
+        static string FlattenStringArray(string[] array) =>
+            string.Join("\n", array);
     }
 }
