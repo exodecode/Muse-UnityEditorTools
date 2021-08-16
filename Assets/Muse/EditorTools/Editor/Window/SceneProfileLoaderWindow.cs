@@ -5,6 +5,7 @@ using System.Linq;
 namespace Muse
 {
     using static SceneUtils;
+    using static ShortcutKeys;
 
     public class SceneProfileLoaderWindow : EditorWindow
     {
@@ -13,7 +14,7 @@ namespace Muse
         SceneProfile[] sceneProfiles;
         Vector2 scrollPos;
 
-        [MenuItem("Tools/Muse/Scene Profile LoaderWindow")]
+        [MenuItem("Tools/Muse/Scene Profile LoaderWindow" + SHORTCUT_WINDOW_SCENEPROFILE)]
         static void ShowWindow() => GetWindow<SceneProfileLoaderWindow>("Scene Profile Loader");
 
         void OnEnable()

@@ -5,14 +5,18 @@ using System.Collections.Generic;
 
 namespace Muse
 {
+    using static ShortcutKeys;
+
     public class PrefabVariantMakerEditorWindow : EditorWindow
     {
+        public const string SHORTCUT_KEY_PREFIX = "&#"; //Alt Shift
+
         public GameObject basePrefab;
         public string nameSuffix;
         public bool clearChildTransforms;
         public List<string> acceptedModelFileTypes = new List<string>() { ".fbx", ".obj" };
 
-        [MenuItem("Tools/Muse/Prefab Variant Maker")]
+        [MenuItem("Tools/Muse/Prefab Variant Maker" + SHORTCUT_WINDOW_PREFABVARIANT)]
         static void ShowWindow() => GetWindow<PrefabVariantMakerEditorWindow>("Prefab Variant Maker");
 
         void OnEnable() => Selection.selectionChanged += Repaint;
