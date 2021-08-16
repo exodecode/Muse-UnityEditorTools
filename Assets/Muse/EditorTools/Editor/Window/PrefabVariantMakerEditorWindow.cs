@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace Muse
 {
@@ -12,7 +11,7 @@ namespace Muse
         public GameObject basePrefab;
         public string nameSuffix;
         public bool clearChildTransforms;
-        public List<string> acceptedModelFileTypes = new List<string>() { ".fbx", ".obj" };
+        public static readonly string[] acceptedModelFileTypes = { ".fbx", ".obj" };
 
         [MenuItem("Tools/Muse/Prefab Variant Maker" + SHORTCUT_WINDOW_PREFABVARIANT)]
         static void ShowWindow() => GetWindow<PrefabVariantMakerEditorWindow>("Prefab Variant Maker");
@@ -41,12 +40,7 @@ namespace Muse
                 var modelSelections =
                     persistantSelections
                     .Select(selection => (selection, path: AssetDatabase.GetAssetPath(selection)))
-                    .Where(pair =>
-                    {
-                        var path = pair.path;
-                        var fileType = path.Substring(path.LastIndexOf("."));
-                        return acceptedModelFileTypes.Contains(fileType);
-                    })
+                    .Where(pair => acceptedModelFileTypes.Contains(FileTypeFromPath(pair.path)))
                     .Select(p => p.selection)
                     .ToArray();
 
@@ -78,69 +72,136 @@ namespace Muse
             }
         }
 
-        public static void CreateVariantsFromSelectedModels(GameObject[] children, GameObject basePrefabAsset, string suffix)
+        public static void CreateVariantsFromSelectedModels(
+            GameObject[] children,
+            GameObject basePrefabAsset,
+            string suffix)
         {
             for (int i = 0; i < children.Length; i++)
-            {
-                var child = children[i];
+                CreateVariantFromSelectedModel(children[i], basePrefabAsset, suffix);
 
-                var basePrefabGameObject = PrefabUtility.InstantiatePrefab(basePrefabAsset) as GameObject;
-                var prop = PrefabUtility.InstantiatePrefab(child) as GameObject;
-
-                basePrefabGameObject.name = child.name;
-
-                prop.transform.SetParent(basePrefabGameObject.transform);
-
-                var path = AssetDatabase.GetAssetPath(child);
-                var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
-                var obj = PrefabUtility.SaveAsPrefabAsset(basePrefabGameObject, pathWithName);
-
-                DestroyImmediate(basePrefabGameObject);
-            }
+            AssetDatabase.Refresh();
         }
 
-        public void CreateVariantsFromSelectedGameObjects(GameObject[] children, GameObject basePrefabAsset, string suffix, bool zeroOutChildTransforms)
+        public static void CreateVariantsFromSelectedGameObjects(
+            GameObject[] children,
+            GameObject basePrefabAsset,
+            string suffix,
+            bool zeroOutChildTransforms)
         {
             for (int i = 0; i < children.Length; i++)
-            {
-                var child = children[i];
-                var basePrefabGameObject = PrefabUtility.InstantiatePrefab(basePrefabAsset) as GameObject;
+                CreateVariantFromSelectedGameObject(children[i], basePrefabAsset, suffix, zeroOutChildTransforms);
 
-                if (zeroOutChildTransforms)
-                {
-                    basePrefabGameObject.transform.position = child.transform.position;
-                    basePrefabGameObject.transform.rotation = child.transform.rotation;
-                }
-
-                var copy = Instantiate<GameObject>(child, basePrefabGameObject.transform, false);
-                copy.name = child.name;
-
-                if (zeroOutChildTransforms)
-                {
-                    copy.transform.localPosition = Vector3.zero;
-                    copy.transform.localRotation = Quaternion.identity;
-                }
-
-                basePrefabGameObject.name = copy.name;
-
-                var path = "Assets/";
-                var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
-
-                basePrefabGameObject.transform.position = Vector3.zero;
-                basePrefabGameObject.transform.rotation = Quaternion.identity;
-
-                var obj = PrefabUtility.SaveAsPrefabAsset(basePrefabGameObject, pathWithName);
-
-                var variant = PrefabUtility.InstantiatePrefab(obj) as GameObject;
-
-                variant.transform.position = child.transform.position;
-                variant.transform.rotation = child.transform.rotation;
-
-                DestroyImmediate(basePrefabGameObject);
-            }
+            AssetDatabase.Refresh();
         }
+
+        public static GameObject CreateVariantFromSelectedModel(
+            GameObject selModel,
+            GameObject basePrefabAsset,
+            string suffix)
+        {
+            var basePrefabGameObject = PrefabUtility.InstantiatePrefab(basePrefabAsset) as GameObject;
+            var prop = PrefabUtility.InstantiatePrefab(selModel) as GameObject;
+
+            basePrefabGameObject.name = selModel.name;
+            prop.transform.SetParent(basePrefabGameObject.transform);
+
+            var path = AssetDatabase.GetAssetPath(selModel);
+            var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + selModel.name + suffix + ".prefab";
+            var obj = PrefabUtility.SaveAsPrefabAsset(basePrefabGameObject, pathWithName);
+
+            DestroyImmediate(basePrefabGameObject);
+
+            return obj;
+        }
+
+        public static GameObject CreateVariantFromSelectedGameObject(
+            GameObject selected,
+            GameObject basePrefabAsset,
+            string suffix,
+            bool zeroOutChildTransforms)
+        {
+            var basePrefabGameObject = PrefabUtility.InstantiatePrefab(basePrefabAsset) as GameObject;
+
+            if (zeroOutChildTransforms)
+            {
+                basePrefabGameObject.transform.position = selected.transform.position;
+                basePrefabGameObject.transform.rotation = selected.transform.rotation;
+            }
+
+            var copy = Instantiate((GameObject)selected, basePrefabGameObject.transform, false);
+            copy.name = selected.name;
+
+            if (zeroOutChildTransforms)
+            {
+                copy.transform.localPosition = Vector3.zero;
+                copy.transform.localRotation = Quaternion.identity;
+            }
+
+            basePrefabGameObject.name = copy.name;
+
+            var path = "Assets/";
+            var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + selected.name + suffix + ".prefab";
+
+            basePrefabGameObject.transform.position = Vector3.zero;
+            basePrefabGameObject.transform.rotation = Quaternion.identity;
+
+            var obj = PrefabUtility.SaveAsPrefabAsset(basePrefabGameObject, pathWithName);
+
+            var variant = PrefabUtility.InstantiatePrefab(obj) as GameObject;
+
+            variant.transform.position = selected.transform.position;
+            variant.transform.rotation = selected.transform.rotation;
+
+            DestroyImmediate(basePrefabGameObject);
+
+            return variant;
+        }
+
+        static string FileTypeFromPath(string filePath) => filePath.Substring(filePath.LastIndexOf("."));
     }
 }
+
+// public static void CreateVariantsFromSelectedGameObjects(GameObject[] children, GameObject basePrefabAsset, string suffix, bool zeroOutChildTransforms)
+// {
+//     for (int i = 0; i < children.Length; i++)
+//     {
+//         var child = children[i];
+//         var basePrefabGameObject = PrefabUtility.InstantiatePrefab(basePrefabAsset) as GameObject;
+
+//         if (zeroOutChildTransforms)
+//         {
+//             basePrefabGameObject.transform.position = child.transform.position;
+//             basePrefabGameObject.transform.rotation = child.transform.rotation;
+//         }
+
+//         var copy = Instantiate<GameObject>(child, basePrefabGameObject.transform, false);
+//         copy.name = child.name;
+
+//         if (zeroOutChildTransforms)
+//         {
+//             copy.transform.localPosition = Vector3.zero;
+//             copy.transform.localRotation = Quaternion.identity;
+//         }
+
+//         basePrefabGameObject.name = copy.name;
+
+//         var path = "Assets/";
+//         var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
+
+//         basePrefabGameObject.transform.position = Vector3.zero;
+//         basePrefabGameObject.transform.rotation = Quaternion.identity;
+
+//         var obj = PrefabUtility.SaveAsPrefabAsset(basePrefabGameObject, pathWithName);
+
+//         var variant = PrefabUtility.InstantiatePrefab(obj) as GameObject;
+
+//         variant.transform.position = child.transform.position;
+//         variant.transform.rotation = child.transform.rotation;
+
+//         DestroyImmediate(basePrefabGameObject);
+//     }
+// }
 
 /* Probably move this into the variant maker editor window. */
 // public static void CreateDestructiblePropPrefabFromModelAsset(
@@ -173,10 +234,32 @@ namespace Muse
 //             nameSuffix);
 
 //     var destroyedVariant = destroyedVariantGroup.variant;
-//     var helper = new GameObject("Helper").AddComponent<GameObjectToolHelper>();
+//     // var helper = new GameObject("Helper").AddComponent<GameObjectToolHelper>();
 
-//     helper.DestroyImmediateGameObject(destroyedVariantGroup.extra);
-//     helper.Finish();
+//     // helper.DestroyImmediateGameObject(destroyedVariantGroup.extra);
+//     // helper.Finish();
 
 //     AssetDatabase.Refresh();
+// }
+
+
+// public static void CreateVariantsFromSelectedModels(GameObject[] children, GameObject basePrefabAsset, string suffix)
+// {
+//     for (int i = 0; i < children.Length; i++)
+//     {
+//         var child = children[i];
+
+//         var basePrefabGameObject = PrefabUtility.InstantiatePrefab(basePrefabAsset) as GameObject;
+//         var prop = PrefabUtility.InstantiatePrefab(child) as GameObject;
+
+//         basePrefabGameObject.name = child.name;
+
+//         prop.transform.SetParent(basePrefabGameObject.transform);
+
+//         var path = AssetDatabase.GetAssetPath(child);
+//         var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + child.name + suffix + ".prefab";
+//         var obj = PrefabUtility.SaveAsPrefabAsset(basePrefabGameObject, pathWithName);
+
+//         DestroyImmediate(basePrefabGameObject);
+//     }
 // }
