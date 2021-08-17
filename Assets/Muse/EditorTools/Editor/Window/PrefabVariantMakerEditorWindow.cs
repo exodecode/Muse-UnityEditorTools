@@ -100,17 +100,17 @@ namespace Muse
             GameObject basePrefabAsset,
             string suffix)
         {
-            var basePrefabGameObject = PrefabUtility.InstantiatePrefab(basePrefabAsset) as GameObject;
+            var basePrefabInstance = PrefabUtility.InstantiatePrefab(basePrefabAsset) as GameObject;
             var prop = PrefabUtility.InstantiatePrefab(selModel) as GameObject;
 
-            basePrefabGameObject.name = selModel.name;
-            prop.transform.SetParent(basePrefabGameObject.transform);
+            basePrefabInstance.name = selModel.name;
+            prop.transform.SetParent(basePrefabInstance.transform);
 
             var path = AssetDatabase.GetAssetPath(selModel);
             var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + selModel.name + suffix + ".prefab";
-            var obj = PrefabUtility.SaveAsPrefabAsset(basePrefabGameObject, pathWithName);
+            var obj = PrefabUtility.SaveAsPrefabAsset(basePrefabInstance, pathWithName);
 
-            DestroyImmediate(basePrefabGameObject);
+            DestroyImmediate(basePrefabInstance);
 
             return obj;
         }

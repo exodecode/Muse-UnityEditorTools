@@ -19,7 +19,7 @@ namespace Muse
         public GridType gridType = GridType.Cartesian;
         public int angularDivisions = 24;
 
-        [MenuItem("Muse/SnapperWindow %&S")]
+        [MenuItem("Tools/Muse/SnapperWindow %&S")]
         static void ShowWindow() => GetWindow<SnapperEditorWindow>("Snapper");
 
         SerializedObject serializedObject;
