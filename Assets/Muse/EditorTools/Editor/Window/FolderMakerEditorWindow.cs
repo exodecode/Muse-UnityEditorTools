@@ -38,14 +38,6 @@ namespace Muse
 
             var assetPaths = GetAssetPathsFromSelections(Selection.objects);
 
-            // var persistantSelections =
-            //     GetPersistantObjects(Selection.objects);
-
-            // var assetPaths =
-            //     persistantSelections
-            //     .Select(persistantSelection => AssetDatabase.GetAssetPath(persistantSelection))
-            //     .ToArray();
-
             var fullAssetPaths =
                 assetPaths
                 .Select(assetPath => GetFullAssetPath(assetPath))
@@ -67,31 +59,24 @@ namespace Muse
                 .ToArray();
 
 
-            // var recentlyMadeDirectoryInfo = new DirectoryInfo[0];
-
             var buttonStyle = new GUIStyle("Button");
             buttonStyle.fontSize = 14;
 
             using (new EditorGUI.DisabledScope(Selection.objects.Length == 0))
             {
-                // using (new EditorGUI.DisabledScope(validNewDirectories.Length == 0))
-                // {
                 if (GUILayout.Button("Create Folders for Selected Assets", buttonStyle))
                 {
-                    // recentlyMadeDirectoryInfo = validNewDirectories.Select(v => Directory.CreateDirectory(v)).ToArray();
                     for (int i = 0; i < validNewDirectories.Length; i++)
                         Directory.CreateDirectory(validNewDirectories[i]);
 
                     AssetDatabase.Refresh();
                 }
-                // }
 
                 using (new EditorGUI.DisabledScope(propValidPathsThatAlreadyExist.arraySize == 0))
                 {
                     if (GUILayout.Button("Move Selected Assets to Directories with the Same Name", buttonStyle))
                     {
                         var l = propValidPathsThatAlreadyExist.arraySize;
-                        // var assetPaths = GetAssetPathsFromSelections(Selection.objects);
 
                         for (int i = 0; i < assetPaths.Length; i++)
                         {
@@ -99,11 +84,9 @@ namespace Muse
                             var parentDir = TrimToLastSlash(assetPath);
                             var fileNameAndFileType = GetFileNameAndType(assetPath);
 
-                            for (int j = 0; j < l; j++)// should just search the current directory for a matching folder
+                            for (int j = 0; j < l; j++)
                             {
                                 var dir = propValidPathsThatAlreadyExist.GetArrayElementAtIndex(j).stringValue;
-                                // var dirName = dir.TrimEnd('/').Split('/').Last();
-                                // var newDir = simplifiedValidNewDirectories[j];
                                 var newDirName = dir.TrimEnd('/').Split('/').Last();
                                 var newPath = dir + fileNameAndFileType.fileName + fileNameAndFileType.fileType;
 
@@ -126,11 +109,6 @@ namespace Muse
                 }
             }
 
-            // using (new EditorGUI.DisabledScope(simplifiedValidNewDirectories.Length == 0))
-            // using (new EditorGUI.DisabledScope(recentlyMadeDirectoryInfo.Length == 0))
-            // {
-            // }
-
             var scrollStyle = new GUIStyle("HelpBox");
             scrollStyle.fontSize = 14;
             scrollStyle.alignment = TextAnchor.MiddleLeft;
@@ -138,7 +116,6 @@ namespace Muse
 
             GUILayout.FlexibleSpace();
 
-            // using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPos, scrollStyle, GUILayout.Height(150)))
             using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPos, scrollStyle))
             {
                 GUILayout.Label("Directories to Create", new GUIStyle("Box"));
