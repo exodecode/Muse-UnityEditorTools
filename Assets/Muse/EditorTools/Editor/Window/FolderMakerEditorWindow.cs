@@ -12,24 +12,39 @@ namespace Muse
     {
         public List<string> acceptedFileTypes = new List<string>() { ".fbx", ".obj", ".prefab", ".unity", ".asset" };
         Vector2 scrollPos;
+        public string[] validPathsThatAlreadyExist;
+
+        SerializedObject so;
+        SerializedProperty propValidPathsThatAlreadyExist;
 
         [MenuItem("Tools/Muse/Folder Maker" + SHORTCUT_WINDOW_FOLDER)]
         private static void ShowWindow() => GetWindow<FolderMakerEditorWindow>("Folder Maker");
 
-        void OnEnable() => Selection.selectionChanged += Repaint;
+        void OnEnable()
+        {
+            so = new SerializedObject(this);
+            propValidPathsThatAlreadyExist = so.FindProperty("validPathsThatAlreadyExist");
+
+            Selection.selectionChanged += Repaint;
+        }
         void OnDisable() => Selection.selectionChanged -= Repaint;
 
         void OnGUI()
         {
+            EditorGUILayout.PropertyField(propValidPathsThatAlreadyExist);
+
+            EditorGUILayout.Space();
             EditorGUILayout.Space();
 
-            var persistantSelections =
-                GetPersistantObjects(Selection.objects);
+            var assetPaths = GetAssetPathsFromSelections(Selection.objects);
 
-            var assetPaths =
-                persistantSelections
-                .Select(persistantSelection => AssetDatabase.GetAssetPath(persistantSelection))
-                .ToArray();
+            // var persistantSelections =
+            //     GetPersistantObjects(Selection.objects);
+
+            // var assetPaths =
+            //     persistantSelections
+            //     .Select(persistantSelection => AssetDatabase.GetAssetPath(persistantSelection))
+            //     .ToArray();
 
             var fullAssetPaths =
                 assetPaths
@@ -51,60 +66,103 @@ namespace Muse
                 .Select(path => path.Substring(Application.dataPath.LastIndexOf('/') + 1))
                 .ToArray();
 
-            using (new EditorGUI.DisabledScope(validNewDirectories.Length == 0))
-            {
-                var buttonStyle = new GUIStyle("Button");
-                buttonStyle.fontSize = 14;
 
+            // var recentlyMadeDirectoryInfo = new DirectoryInfo[0];
+
+            var buttonStyle = new GUIStyle("Button");
+            buttonStyle.fontSize = 14;
+
+            using (new EditorGUI.DisabledScope(Selection.objects.Length == 0))
+            {
+                // using (new EditorGUI.DisabledScope(validNewDirectories.Length == 0))
+                // {
                 if (GUILayout.Button("Create Folders for Selected Assets", buttonStyle))
                 {
+                    // recentlyMadeDirectoryInfo = validNewDirectories.Select(v => Directory.CreateDirectory(v)).ToArray();
                     for (int i = 0; i < validNewDirectories.Length; i++)
                         Directory.CreateDirectory(validNewDirectories[i]);
 
                     AssetDatabase.Refresh();
                 }
+                // }
 
-                if (GUILayout.Button("Move Selected Assets to Valid Directories Based on Name", buttonStyle))
+                using (new EditorGUI.DisabledScope(propValidPathsThatAlreadyExist.arraySize == 0))
                 {
-                    for (int i = 0; i < Selection.objects.Length; i++)
+                    if (GUILayout.Button("Move Selected Assets to Directories with the Same Name", buttonStyle))
                     {
-                        var obj = Selection.objects[i];
-                        var assetPath = AssetDatabase.GetAssetPath(obj);
-                        var parentDir = TrimToLastSlash(assetPath);
-                        var fileNameAndFileType = GetFileNameAndType(assetPath);
+                        var l = propValidPathsThatAlreadyExist.arraySize;
+                        // var assetPaths = GetAssetPathsFromSelections(Selection.objects);
 
-                        for (int j = 0; j < simplifiedValidNewDirectories.Length; j++)
+                        for (int i = 0; i < assetPaths.Length; i++)
                         {
-                            var newDir = simplifiedValidNewDirectories[j];
-                            var newDirName = newDir.TrimEnd('/').Split('/').Last();
-                            var newPath = newDir + fileNameAndFileType.fileName + fileNameAndFileType.fileType;
+                            var assetPath = assetPaths[i];
+                            var parentDir = TrimToLastSlash(assetPath);
+                            var fileNameAndFileType = GetFileNameAndType(assetPath);
 
-                            if (fileNameAndFileType.fileName == newDirName)
-                                AssetDatabase.MoveAsset(assetPath, newPath);
+                            for (int j = 0; j < l; j++)// should just search the current directory for a matching folder
+                            {
+                                var dir = propValidPathsThatAlreadyExist.GetArrayElementAtIndex(j).stringValue;
+                                // var dirName = dir.TrimEnd('/').Split('/').Last();
+                                // var newDir = simplifiedValidNewDirectories[j];
+                                var newDirName = dir.TrimEnd('/').Split('/').Last();
+                                var newPath = dir + fileNameAndFileType.fileName + fileNameAndFileType.fileType;
+
+                                if (fileNameAndFileType.fileName == newDirName)
+                                    AssetDatabase.MoveAsset(assetPath, newPath);
+                            }
                         }
-                    }
 
-                    AssetDatabase.Refresh();
+                        AssetDatabase.Refresh();
+                    }
                 }
 
-                var scrollStyle = new GUIStyle("HelpBox");
-                scrollStyle.fontSize = 14;
-                scrollStyle.alignment = TextAnchor.MiddleLeft;
-                scrollStyle.wordWrap = false;
-
-                GUILayout.FlexibleSpace();
-
-                using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPos, scrollStyle, GUILayout.Height(150)))
+                if (GUILayout.Button("Search For Matching Directories", buttonStyle))
                 {
-                    GUILayout.Label("Directories to Create", new GUIStyle("Box"));
-                    scrollPos = scrollView.scrollPosition;
+                    var v = GetValidDirectoriesThatExistFromAssetPaths(assetPaths);
+                    propValidPathsThatAlreadyExist.arraySize = v.Length;
 
-                    var pathStyle = new GUIStyle("WhiteLabel");
-                    pathStyle.fontSize = 14;
-                    GUILayout.Label(FlattenStringArray(simplifiedValidNewDirectories), pathStyle);
+                    for (int i = 0; i < v.Length; i++)
+                        propValidPathsThatAlreadyExist.GetArrayElementAtIndex(i).stringValue = v[i];
                 }
             }
+
+            // using (new EditorGUI.DisabledScope(simplifiedValidNewDirectories.Length == 0))
+            // using (new EditorGUI.DisabledScope(recentlyMadeDirectoryInfo.Length == 0))
+            // {
+            // }
+
+            var scrollStyle = new GUIStyle("HelpBox");
+            scrollStyle.fontSize = 14;
+            scrollStyle.alignment = TextAnchor.MiddleLeft;
+            scrollStyle.wordWrap = false;
+
+            GUILayout.FlexibleSpace();
+
+            // using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPos, scrollStyle, GUILayout.Height(150)))
+            using (var scrollView = new EditorGUILayout.ScrollViewScope(scrollPos, scrollStyle))
+            {
+                GUILayout.Label("Directories to Create", new GUIStyle("Box"));
+                scrollPos = scrollView.scrollPosition;
+
+                var pathStyle = new GUIStyle("WhiteLabel");
+                pathStyle.fontSize = 14;
+                GUILayout.Label(FlattenStringArray(simplifiedValidNewDirectories), pathStyle);
+            }
         }
+
+        static string[] GetAssetPathsFromSelections(Object[] selections) =>
+            selections
+                .Where(selection => EditorUtility.IsPersistent(selection))
+                .Select(persistant => AssetDatabase.GetAssetPath(persistant))
+                .Where(p => !string.IsNullOrEmpty(p) && p.Contains('.'))
+                .ToArray();
+
+        static string[] GetValidDirectoriesThatExistFromAssetPaths(string[] assetPaths) =>
+            assetPaths
+                .Select(fullPath => GetNewDirectoryPath(fullPath))
+                .Where(dirPath => Directory.Exists(dirPath))
+                .Distinct()
+                .ToArray();
 
         static string GetDirectoryName(string directoryPath) => directoryPath.TrimEnd('/').Split('/').Last();
 
