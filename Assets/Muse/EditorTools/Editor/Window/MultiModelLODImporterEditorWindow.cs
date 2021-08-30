@@ -79,11 +79,22 @@ namespace Muse
                             g.name = group.Key.Substring(0, group.Key.Length - 4);
 
                             var values = group.ToArray();
+                            var lodGroup = g.AddComponent<LODGroup>();
 
                             for (int j = 0; j < values.Length; j++)
                                 values[j].SetParent(g.transform);
 
-                            g.AddComponent<LODGroup>();
+                            var lods = new LOD[values.Length];
+
+                            for (int j = 0; j < values.Length; j++)
+                            {
+                                Debug.Log("Value Count: " + values.Length);
+                                var rends = values[j].GetComponents<Renderer>();
+                                lods[j] = new LOD(1f / (j + 1), rends);
+                            }
+
+                            lodGroup.SetLODs(lods);
+                            lodGroup.RecalculateBounds();
 
                             var path = "Assets/";
                             var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + namePrefix + g.name + nameSuffix + ".prefab";
