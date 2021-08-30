@@ -10,6 +10,7 @@ namespace Muse
     public class MultiModelLODImporterEditorWindow : EditorWindow
     {
         public GameObject basePrefab;
+        public string namePrefix;
         public string nameSuffix;
 
         public readonly string[] acceptedFileTypes = new string[] { ".fbx", ".obj" };
@@ -48,6 +49,7 @@ namespace Muse
             using (new EditorGUILayout.VerticalScope())
             {
                 basePrefab = EditorGUILayout.ObjectField("Base Prefab", basePrefab, typeof(GameObject), false) as GameObject;
+                namePrefix = EditorGUILayout.TextField("Name Prefix", namePrefix);
                 nameSuffix = EditorGUILayout.TextField("Name Suffix", nameSuffix);
             }
 
@@ -84,7 +86,7 @@ namespace Muse
                             g.AddComponent<LODGroup>();
 
                             var path = "Assets/";
-                            var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + g.name + nameSuffix + ".prefab";
+                            var pathWithName = path.Substring(0, path.LastIndexOf('/') + 1) + namePrefix + g.name + nameSuffix + ".prefab";
 
                             g.transform.position = Vector3.zero;
                             g.transform.rotation = Quaternion.identity;
