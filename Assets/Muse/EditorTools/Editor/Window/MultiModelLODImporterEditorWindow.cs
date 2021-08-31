@@ -82,13 +82,19 @@ namespace Muse
                             var lodGroup = g.AddComponent<LODGroup>();
 
                             for (int j = 0; j < values.Length; j++)
-                                values[j].SetParent(g.transform);
+                            {
+                                var t = values[j];
+                                t.SetParent(g.transform);
+
+                                t.localPosition = Vector3.zero;
+                                t.localRotation = Quaternion.identity;
+                                t.localScale = Vector3.one;
+                            }
 
                             var lods = new LOD[values.Length];
 
                             for (int j = 0; j < values.Length; j++)
                             {
-                                Debug.Log("Value Count: " + values.Length);
                                 var rends = values[j].GetComponents<Renderer>();
                                 lods[j] = new LOD(1f / (j + 1), rends);
                             }
