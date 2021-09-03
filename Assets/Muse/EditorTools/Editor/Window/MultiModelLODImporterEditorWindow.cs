@@ -65,7 +65,7 @@ namespace Muse
                         var a = AssetDatabase.LoadAssetAtPath<GameObject>(validSelections[i]);
                         var go = Instantiate(a);
 
-                        var children = Enumerable.Range(0, go.transform.childCount).Select(i => go.transform.GetChild(i));
+                        var children = Enumerable.Range(0, go.transform.childCount).Select(j => go.transform.GetChild(j));
                         var childrenWithLOD = children.Where(child => child.name.Contains("_LOD"));
                         var sortedGroups = childrenWithLOD.GroupBy(c => c.name.Substring(0, c.name.Length - 1)).ToList();
 
