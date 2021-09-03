@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEngine;
 
 namespace Muse
 {
@@ -13,9 +14,10 @@ namespace Muse
         public static string Flatten(this string[] array, string separator) =>
             string.Join(separator, array);
 
-        public static T[] GetSurroundingCells<T>(this T[] a, int index, int width)
+        public static T[] GetSurroundingElements<T>(this T[] a, int index, int width)
         {
             var length = a.Length;
+            Debug.Assert((length % width == 0), "Array length is not divisible by width so could not calculate surronding elements.");
 
             //corners
             var isTopLeft = index == 0;
