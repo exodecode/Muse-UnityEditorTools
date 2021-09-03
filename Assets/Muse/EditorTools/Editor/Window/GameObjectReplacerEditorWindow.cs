@@ -61,7 +61,6 @@ namespace Muse
         {
             var selectedGameObjects = Selection.gameObjects;
             var length = selectedGameObjects.Length;
-            var replacementsParent = new GameObject("[" + prefabReplacement.name + "]");
 
             for (int i = 0; i < length; i++)
             {
@@ -73,15 +72,12 @@ namespace Muse
                 replacement.transform.position = position;
                 replacement.transform.rotation = rotation;
 
-                replacement
-                    .transform
-                    .SetParent(replacementsParent.transform);
+                replacement.transform.SetParent(go.transform);
+                replacement.transform.SetParent(go.transform.parent);
 
                 Undo.RegisterCreatedObjectUndo(replacement, "Create replacement");
                 Undo.DestroyObjectImmediate(go);
             }
-
-            Undo.RegisterCreatedObjectUndo(replacementsParent, "Create replacement parent");
         }
 
         static string FlattenStringArray(string[] array) =>
