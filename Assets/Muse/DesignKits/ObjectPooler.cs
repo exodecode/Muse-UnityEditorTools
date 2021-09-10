@@ -14,22 +14,15 @@ namespace Muse
         int[] activeIndexes;
         int length;
 
-        public GameObject DrawFromPools(int prefabIndex)
-        {
-            return DrawFromPool(pools[prefabIndex], ref activeIndexes[prefabIndex]);
-        }
+        public GameObject DrawFromPools(int prefabIndex) =>
+            DrawFromPool(pools[prefabIndex], ref activeIndexes[prefabIndex]);
 
-        public void CleanupPool(int index)
-        {
-            for (int j = 0; j < pools[index].Length; j++)
-                pools[index][j].SetActive(false);
-        }
+        public void DisableAllInPoolAt(int index) => pools[index].DisableAll();
 
-        public void CleanupAllPools()
+        public void DisableAllPools()
         {
             for (int i = 0; i < pools.Length; i++)
-                for (int j = 0; j < pools[i].Length; j++)
-                    pools[i][j].SetActive(false);
+                pools[i].DisableAll();
         }
 
         void Awake()
@@ -40,10 +33,10 @@ namespace Muse
             activeIndexes = new int[length];
 
             for (int i = 0; i < length; i++)
-                pools[i] = PoolPrefab(prefabsToPool[i], poolSize, transform);
+                pools[i] = CreatePool(prefabsToPool[i], poolSize, transform);
         }
 
-        static Pool PoolPrefab(GameObject prefabToPool, int poolSize, Transform parent)
+        static Pool CreatePool(GameObject prefabToPool, int poolSize, Transform parent)
         {
             GameObject CreateGO(int index)
             {

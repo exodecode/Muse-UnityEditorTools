@@ -14,9 +14,9 @@ public class ExampleObjectPooler : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Space))
             Spawn(2);
         else if (Input.GetKeyDown(KeyCode.C))
-            objectPooler.CleanupAllPools();
+            objectPooler.DisableAllPools();
         else if (Input.GetKeyDown(KeyCode.A))
-            objectPooler.CleanupPool(0);
+            objectPooler.DisableAllInPoolAt(0);
     }
 
     void Spawn(int index)
