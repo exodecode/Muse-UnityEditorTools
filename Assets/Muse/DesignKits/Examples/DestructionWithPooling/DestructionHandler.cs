@@ -28,7 +28,7 @@ namespace Muse
                         var pos = handler.transform.position;
                         var rot = handler.transform.rotation;
                         handler.gameObject.SetActive(false);
-                        var g = objectPooler.DrawFromPool(index);
+                        var g = objectPooler.DrawFromPools(index);
 
                         var rbs = g.GetComponentsInChildren<Rigidbody>();
                         for (int k = 0; k < rbs.Length; k++)
@@ -41,7 +41,7 @@ namespace Muse
                         g.transform.position = pos;
                         g.transform.rotation = rot;
                     };
-                    // Debug.Log(i);
+
                     handler.Init(callback);
                 }
             }

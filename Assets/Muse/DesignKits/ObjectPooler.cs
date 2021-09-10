@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 namespace Muse
@@ -5,17 +6,17 @@ namespace Muse
     public class ObjectPooler : MonoBehaviour
     {
         public GameObject[] prefabsToPool;
+
         [Range(1, 128)]
         public int poolSize = 1;
 
-        GameObject[][] pools;
+        Pool[] pools;
         int[] activeIndexes;
         int length;
 
-        public GameObject DrawFromPool(int index)
+        public GameObject DrawFromPools(int prefabIndex)
         {
-            // Debug.Log("Index: " + index);
-            return DrawFromPool(pools[index], ref activeIndexes[index]);
+            return DrawFromPool(pools[prefabIndex], ref activeIndexes[prefabIndex]);
         }
 
         public void CleanupPool(int index)
@@ -34,28 +35,31 @@ namespace Muse
         void Awake()
         {
             length = prefabsToPool.Length;
-            pools = new GameObject[length][];
+
+            pools = new Pool[length];
             activeIndexes = new int[length];
 
             for (int i = 0; i < length; i++)
                 pools[i] = PoolPrefab(prefabsToPool[i], poolSize, transform);
         }
 
-        static GameObject[] PoolPrefab(GameObject prefabToPool, int poolSize, Transform parent)
+        static Pool PoolPrefab(GameObject prefabToPool, int poolSize, Transform parent)
         {
-            var pool = new GameObject[poolSize];
-            for (int i = 0; i < poolSize; i++)
+            GameObject CreateGO(int index)
             {
                 var go = Instantiate(prefabToPool);
-                go.name = go.name + "_" + (i < 10 ? ("0" + i.ToString()) : i.ToString());
+                go.name = go.name + "_" + (index < 10 ? ("0" + index.ToString()) : index.ToString());
                 go.SetActive(false);
                 go.transform.SetParent(parent);
-                pool[i] = go;
+                return go;
             }
-            return pool;
+
+            var gameObjects = Enumerable.Range(0, poolSize).Select(i => CreateGO(i)).ToArray();
+
+            return new Pool(gameObjects);
         }
 
-        static GameObject DrawFromPool(GameObject[] pool, ref int activeIndex)
+        static GameObject DrawFromPool(Pool pool, ref int activeIndex)
         {
             if (activeIndex >= pool.Length)
                 activeIndex = 0;
@@ -65,5 +69,25 @@ namespace Muse
 
             return g;
         }
+    }
+
+    struct Pool
+    {
+        public readonly GameObject[] gameObjects;
+        public readonly int Length;
+
+        public Pool(GameObject[] gameObjects)
+        {
+            this.gameObjects = gameObjects;
+            this.Length = gameObjects.Length;
+        }
+
+        public void DisableAll()
+        {
+            for (int i = 0; i < gameObjects.Length; i++)
+                gameObjects[i].SetActive(false);
+        }
+
+        public GameObject this[int index] => gameObjects[index];
     }
 }

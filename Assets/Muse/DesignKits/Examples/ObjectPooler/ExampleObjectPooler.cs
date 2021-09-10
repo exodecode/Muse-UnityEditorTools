@@ -21,7 +21,7 @@ public class ExampleObjectPooler : MonoBehaviour
 
     void Spawn(int index)
     {
-        var g = objectPooler.DrawFromPool(index);
+        var g = objectPooler.DrawFromPools(index);
         g.transform.position = Vector3.zero;
         g.transform.rotation = Quaternion.identity;
         g.GetComponent<Rigidbody>().velocity = Vector3.zero;
