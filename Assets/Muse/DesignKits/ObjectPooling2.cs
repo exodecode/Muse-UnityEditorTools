@@ -13,21 +13,13 @@ public class ObjectPooling2 : MonoBehaviour
         goQueue = CreateQueue(gameObjectToPool, maxActive);
     }
 
-    static GameObject GetGameObjectFrom(Queue<GameObject> q)
+    GameObject DrawFromPool()
     {
-        var g = q.Dequeue();
+        var g = goQueue.Dequeue();
         ResetGameObject(g);
         g.SetActive(true);
-        q.Enqueue(g);
+        goQueue.Enqueue(g);
         return g;
-    }
-
-    static void ResetGameObject(GameObject g)
-    {
-        var t = g.transform;
-        t.position = Vector3.zero;
-        t.rotation = Quaternion.identity;
-        t.localScale = Vector3.one;
     }
 
     static void DisableObject(Queue<GameObject> q, GameObject g)
@@ -50,12 +42,20 @@ public class ObjectPooling2 : MonoBehaviour
         return q;
     }
 
+    static void ResetGameObject(GameObject g)
+    {
+        var t = g.transform;
+        t.position = Vector3.zero;
+        t.rotation = Quaternion.identity;
+        t.localScale = Vector3.one;
+    }
+
 #if UNITY_EDITOR
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            var g = GetGameObjectFrom(goQueue);
+            var g = DrawFromPool();
             g.transform.position = new Vector3(0, 10, 0);
         }
     }
