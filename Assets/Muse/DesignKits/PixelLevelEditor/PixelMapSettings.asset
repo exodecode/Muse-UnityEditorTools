@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 979b9de50487ad14f953511755d86993, type: 3}
-  m_Name: MappablesData
+  m_Name: PixelMapSettings
   m_EditorClassIdentifier: 
-  mappables:
-  - name: icosphereBlue
-    prefab: {fileID: 8994700741636422977, guid: d8d9ccafab76b6444b07520c0c03b7d3, type: 3}
-    color: {r: 0.036365032, g: 0, b: 1, a: 0}
+  prefabsToMap:
   - name: icosphereRed
     prefab: {fileID: 8994700741636422977, guid: 659ecf1950bd50245bbd771bb2632108, type: 3}
-    color: {r: 1, g: 0, b: 0.124361515, a: 0}
+    color: {r: 1, g: 0, b: 0, a: 1}
+  - name: icosphereBlue
+    prefab: {fileID: 8994700741636422977, guid: d8d9ccafab76b6444b07520c0c03b7d3, type: 3}
+    color: {r: 0, g: 0, b: 1, a: 1}
