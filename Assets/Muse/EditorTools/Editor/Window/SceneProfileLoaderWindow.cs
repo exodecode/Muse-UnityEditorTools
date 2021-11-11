@@ -19,7 +19,7 @@ namespace Muse
 
         void OnEnable()
         {
-            sceneProfiles = GetAllInstancesF<SceneProfile>();
+            sceneProfiles = GetAllInstances<SceneProfile>();
             options = sceneProfiles.Select(profile => profile.name).ToArray();
         }
 
@@ -68,7 +68,7 @@ namespace Muse
             }
         }
 
-        static T[] GetAllInstancesF<T>() where T : ScriptableObject
+        static T[] GetAllInstances<T>() where T : ScriptableObject
         {
             var guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);
             var paths = guids.Select(guid => AssetDatabase.GUIDToAssetPath(guid));
