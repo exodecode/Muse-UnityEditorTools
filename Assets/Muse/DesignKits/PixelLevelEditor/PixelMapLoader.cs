@@ -63,5 +63,19 @@ public class PixelMapLoader : MonoBehaviour
              HeightFromAlpha(pixelCoordsAndAlpha.a),
              pixelCoordsAndAlpha.y - mapRadius);
 
-    public static float HeightFromAlpha(float a) => (Mathf.Clamp(a, 0, 1) * 100) - 50;
+    public static float HeightFromAlpha(float a)
+    {
+        float x;
+        // if (Mathf.Approximately(a, 0.5f))
+        // x = 0;
+        // else
+        x = Mathf.Round((Mathf.Clamp(a, 0, 1) * 100) - 50);
+
+        if (x == -1)
+            Debug.Log("-1: " + a);
+        else if (x == 0)
+            Debug.Log("0: " + a);
+
+        return x;
+    }
 }

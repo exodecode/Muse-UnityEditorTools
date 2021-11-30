@@ -70,7 +70,7 @@ namespace Muse
         public static (int x, int z, float a) WorldPositionToPixelCoordsAndAlpha(Vector3 pos, int mapRadius)
         {
             var x = Mathf.RoundToInt(Mathf.Clamp(pos.x, -mapRadius, mapRadius)) + mapRadius;
-            var a = (Mathf.Clamp(pos.y, -50, 50) + 50) * 0.01f;
+            var a = Mathf.RoundToInt(Mathf.Clamp(pos.y, -50, 50) + 50) * 0.01f;
             var y = Mathf.RoundToInt(Mathf.Clamp(pos.z, -mapRadius, mapRadius)) + mapRadius;
 
             return (x, y, a);
@@ -87,7 +87,7 @@ namespace Muse
             var width = mapRadius * 2;
             var height = mapRadius * 2;
 
-            var tex = new Texture2D(width, height, TextureFormat.RGBA32, false);
+            var tex = new Texture2D(width, height, TextureFormat.RGBA64, false);
 
             for (int w = 0; w < width; w++)
                 for (int h = 0; h < height; h++)
