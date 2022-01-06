@@ -41,7 +41,7 @@ namespace Muse
                 .Where(sel => acceptedFileTypes.Contains(GetFileNameAndType(sel).fileType))
                 .ToArray();
 
-            list = validSelections.Flatten("\n");
+            list = validSelections.Join("\n");
         }
 
         void OnGUI()

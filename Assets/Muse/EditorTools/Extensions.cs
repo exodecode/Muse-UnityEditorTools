@@ -11,7 +11,7 @@ namespace Muse
         public static string TrimBeforeLastChar(this string s, char c, bool includeChar = false) =>
             s.Substring(s.LastIndexOf(c) + (includeChar ? 1 : 0));
 
-        public static string Flatten(this string[] array, string separator) =>
+        public static string Join(this string[] array, string separator) =>
             string.Join(separator, array);
 
         public static T[] GetSurroundingElements<T>(this T[] a, int index, int width)

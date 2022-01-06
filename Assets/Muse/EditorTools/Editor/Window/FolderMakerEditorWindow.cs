@@ -54,7 +54,7 @@ namespace Muse
                 validNewDirectories
                 .Select(path => path.Substring(Application.dataPath.LastIndexOf('/') + 1))
                 .ToArray()
-                .Flatten("\n");
+                .Join("\n");
 
             propSimplifiedValidNewDir.stringValue = simplifiedValidNewDirectories;
 
